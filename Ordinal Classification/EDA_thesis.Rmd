@@ -1,0 +1,75 @@
+---
+title: "EDA_thesis"
+author: "McKade Thomas"
+date: "10/11/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(ggplot2)
+```
+
+
+# Exploratory Data Analysis
+```{r}
+ggplot(steel_encoded, aes(x = Usage_kWh)) + 
+  geom_histogram(aes(y =..density..), colour = "black", fill = "grey", bins = 65) + 
+  geom_density(alpha=.2, fill="red", color = "grey") +
+  theme_classic() + 
+  labs(title = "Distribution of Energy Usage (kWh)",
+       y = "Density", x = "Energy Usage")
+
+ggplot(conduct_encoded, aes(x = critical_temp)) + 
+  geom_histogram(aes(y =..density..), colour = "black", fill = "grey", bins = 65) + 
+  geom_density(alpha=.2, fill="red", color = "grey") +
+  theme_classic() + 
+  labs(title = "Distribution of Critical Temperature",
+       y = "Density", x = "Critical Temp")
+
+ggplot(gas_encoded, aes(x = strength)) + 
+  geom_histogram(aes(y =..density..), colour = "black", fill = "grey", bins = 50) + 
+  geom_density(alpha=.2, fill="red", color = "grey") +
+  theme_classic() + 
+  labs(title = "Distribution of Compression Strength",
+       y = "Density", x = "Compression Strength")
+```
+
+
+```{r}
+d=data.frame(x=c(1,2,3,4,5,6,7,8,9,10), y=c(1,2,3,4,5,6,7,8,9,10))
+ggplot() +
+geom_step(data=d, mapping=aes(x=x, y=y)) +
+geom_step(data=d, mapping=aes(x=x, y=y), direction="h") +
+geom_point(data=d, mapping=aes(x=x, y=y), color="red") + theme_classic()
+
+ggplot(d,aes(x,y,group=as.factor(x)))+geom_line()
+
+```
+
+```{r}
+df <- data.frame(x=seq(1, 5)+0.5, y=seq(1,5)+0.5)
+df$xend <- c(df$x[1:nrow(df)]+1)
+df$yend <- df$y
+ggplot(df, aes(x=x, y=y, xend=xend, yend=yend)) +
+      geom_point() +  # Solid points to left
+      geom_point(aes(x=xend, y=y), shape=1) +
+      # geom_smooth() + # Open points to right
+      geom_segment() + 
+      geom_line(aes(x=x,y=y), col="red") +
+      geom_smooth() +
+      ggtitle("Ordinal Regression") +
+      labs(x="Prediction",y="Ordinal Label") +
+      theme_classic()
+```
+
+
+```{r}
+ggplot(data.frame(c(seq(1:7))), aes(x=c(1.5, 2, 3, 4, 4, 5, 5), y=c(1.5, 2.5, 3.5, 3.5, 4.5, 4.5, 5.5))) + geom_point() + geom_smooth()
+```
+

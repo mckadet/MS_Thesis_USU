@@ -1,0 +1,11 @@
+"0"," get_mse(test$Median_House_Value, predict(LM, newdata = test))
+"
+"2","Warning in predict.lm(LM, newdata = test) :"
+"2","
+ "
+"2"," prediction from a rank-deficient fit may be misleading
+"
+"1","[1]"
+"1"," 87826168"
+"1","
+"

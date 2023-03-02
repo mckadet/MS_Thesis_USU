@@ -1,0 +1,13 @@
+\babel@toc {english}{}\relax 
+\contentsline {table}{\numberline {1}{\ignorespaces An overview of the characteristics of the datasets used in the experiment. Each dataset comes from the UCI Machine Learning Repository. The outcome variable for each dataset is continuous. Each set has over $1,000$ observations and numerous input features.}}{14}{}%
+\contentsline {table}{\numberline {2}{\ignorespaces Summary statistics of the continuous outcome variables for the three data sets used in this experiment. Based on the five number summary, mean, and standard deviation it is clear that the variables were not distributed identically.}}{15}{}%
+\contentsline {table}{\numberline {3}{\ignorespaces Brief descriptions of the nine input features used for the experiment and the outcome variable for the steel energy usage dataset. The features were a mix of continuous and categorical measures and were recorded with varied techniques or measurement types.}}{16}{}%
+\contentsline {table}{\numberline {4}{\ignorespaces Descriptive statistics for each of the six quantitative input features used in the experiment and the outcome variable for the steel compression strength dataset.}}{18}{}%
+\contentsline {table}{\numberline {5}{\ignorespaces Brief descriptions of the seven input features used for the experiment and the outcome variable for the superconducting critial temperature dataset. The features were a mix of continuous and categorical measures.}}{19}{}%
+\contentsline {table}{\numberline {6}{\ignorespaces Descriptive statistics for each of the nine input features used in the experiment and the outcome variable for the superconducting critical temperature dataset.}}{21}{}%
+\contentsline {table}{\numberline {7}{\ignorespaces Brief descriptions of the eight input features used for the experiment and outcome variable for the concrete compression strength dataset. The features were a mix of continuous and categorical measures.}}{23}{}%
+\contentsline {table}{\numberline {8}{\ignorespaces Descriptive statistics for each of the input features used in the experiment and the outcome variable for the concrete compression strength dataset.}}{24}{}%
+\contentsline {table}{\numberline {9}{\ignorespaces Binned Class Distributions}}{33}{}%
+\contentsline {table}{\numberline {10}{\ignorespaces Base GBM Performance}}{40}{}%
+\contentsline {table}{\numberline {11}{\ignorespaces Percentage of binned complexity needed to reach optimization compared to the continuous model's complexity at optimization.}}{46}{}%
+\contentsfinish 

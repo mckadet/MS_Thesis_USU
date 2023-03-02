@@ -1,0 +1,6 @@
+"0","features <- c(""class"", ""Lat"",""Long"",""Housing_Median_Age"", ""Block_Rooms"",
+              ""Bedrooms"", ""Population"", ""Households"", ""Income"", ""id"", )
+"
+"2","Error in c(""class"", ""Lat"", ""Long"", ""Housing_Median_Age"", ""Block_Rooms"",  : 
+  argument 11 is empty
+"

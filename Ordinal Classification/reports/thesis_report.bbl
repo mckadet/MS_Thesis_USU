@@ -1,0 +1,105 @@
+\begin{thebibliography}{10}
+
+\bibitem{UCI:Desc}
+Aha, Dua, Dheeru, Graff, and Casey.
+\newblock {UCI} machine learning repository about, 2017.
+
+\bibitem{Quote:Anderson}
+J.~A. Anderson.
+\newblock Regression and ordered categorical variables.
+\newblock {\em J. Royal Statist. Soc. Ser. B (Methodological)}, 41:1--30, 2008.
+
+\bibitem{Quote:Chwif}
+L.~Chwif, Marcos Pereira-Barretto, and Ray~J. Paul.
+\newblock On simulation model complexity.
+\newblock volume~9 of {\em 2000 Winter Simulation Conference Proceedings}.
+  IEEE, 2000.
+
+\bibitem{Cunning}
+P.~Cunningham, M.~Cord, and S.~J. Delany.
+\newblock {\em Machine Learning Techniques for Multimedia}.
+\newblock Cognitive Technologies, 2008.
+
+\bibitem{Dua:2019}
+Dua, Dheeru, Graff, and Casey.
+\newblock {UCI} machine learning repository, 2017.
+
+\bibitem{Quote:Hall}
+Eibe Frank and Mark Hall.
+\newblock A simple approach to ordinal classification.
+\newblock {\em Lecture Notes in Computer Science}, 2167:145--156, 2001.
+
+\bibitem{Quote:Golay}
+M.~P. Golay, P.H. Seong, and V.P Manno.
+\newblock A measure of the difficulty of systems diagnosis and its relationship
+  to complexity, 1989.
+
+\bibitem{Quote:Gutierrez}
+P.~A. Gutierrez, M.~Perez-Ortiz, J.~Sanchez-Monedero, F.~Fernandez-Navarro, and
+  C.~Hervas-Martinez.
+\newblock Ordinal regression methods: Survey and experimental study.
+\newblock {\em IEEE Transactions on Knowledge and Data Engineering},
+  28:127--146, 2015.
+
+\bibitem{RelatedWork:Conduct}
+Kam Hamidieh.
+\newblock A data-driven statistical model for predicting the critical
+  temperature of a superconductor.
+\newblock {\em Computational Materials Science}, 154:346--354, 2018.
+
+\bibitem{Data:Conduct}
+Kam Hamidieh.
+\newblock Superconductivity data set, 2018.
+
+\bibitem{Quote:Hild}
+Hildebrand, Laing, and Rosenthal.
+\newblock {\em Analysis of Ordinal Data}.
+\newblock Sage Publications Inc., 2455 Teller Rd, Newbury Park, CA 91320, 1977.
+
+\bibitem{RelatedWork:Concrete}
+Alexey Natekin and Alois Knoll.
+\newblock Gradient boosting machines, a tutorial.
+\newblock {\em Cement and Concrete Research}, 28:1797--1808, 2013.
+
+\bibitem{Quote:Probst}
+P.~Probst, M.~Wright, and A.~Boulesteix.
+\newblock Hyperparameters and tuning strategies for random forest.
+\newblock {\em WIREs Data Mining and Knowledge Discovery}, 9, 2019.
+
+\bibitem{Data:Steel}
+V.~E. Sathishkumar.
+\newblock Steel industry energy consumption data set, 2021.
+
+\bibitem{RelatedWork:Steel}
+V.~E. Sathishkumar, Shin Changsun, and Cho Yongyun.
+\newblock Efficient energy consumption prediction model for a data
+  analytic-enabled industry building in a smart city.
+\newblock {\em Building Research and Information}, 49:127--143, 2020.
+
+\bibitem{Saleh}
+S.~Seyedzadeh, F.~P. Rahimian, P.~Rastogi, and I.~Glesk.
+\newblock Tuning machine learning models for prediction of building energy
+  loads.
+\newblock {\em Sustainable Cities and Society}, 47, 2020.
+
+\bibitem{Quote:Simon}
+H.A. Simon.
+\newblock The architecture of complexity, 1964.
+
+\bibitem{Wisler}
+A.~Wisler, K.~Teplansky, J.~R. Green, S.~S. Austin, and J.~Wang.
+\newblock Can machines learn continuous measures of speech severity from
+  ordinal training labels.
+\newblock {\em AAAI Publications}, 6, 2020.
+
+\bibitem{Support:GBM}
+I-Cheng Yeh.
+\newblock Modeling of strength of high-performance concrete using artificial
+  neural networks.
+\newblock {\em Frontiers in Neurobotics}, 7, 1998.
+
+\bibitem{Data:Compress}
+I-Cheng Yeh.
+\newblock Concrete compression strength data set, 2007.
+
+\end{thebibliography}

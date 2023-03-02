@@ -1,0 +1,533 @@
+---
+title: "deprecated_thesis_code"
+author: "McKade Thomas"
+date: "10/11/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r crime_names, include = FALSE}
+true_names <- c(
+ "CrimeRate"
+ ,"state" 
+ ,"county" 
+ ,"community" 
+ , "communityname" 
+ ,"fold" 
+ ,"population" 
+ ,"householdsize" 
+ ,"racepctblack" 
+ ,"racePctWhite" 
+ ,"racePctAsian" 
+ ,"racePctHisp" 
+ ,"agePct12t21" 
+ ,"agePct12t29" 
+ ,"agePct16t24" 
+ ,"agePct65up" 
+ ,"numbUrban" 
+ ,"pctUrban" 
+ ,"medIncome" 
+ ,"pctWWage" 
+ ,"pctWFarmSelf" 
+ ,"pctWInvInc" 
+ ,"pctWSocSec" 
+ ,"pctWPubAsst" 
+ ,"pctWRetire" 
+ ,"medFamInc" 
+ ,"perCapInc" 
+ ,"whitePerCap" 
+ ,"blackPerCap" 
+ ,"indianPerCap" 
+ ,"AsianPerCap" 
+ ,"OtherPerCap" 
+ ,"HispPerCap" 
+ ,"NumUnderPov" 
+ ,"PctPopUnderPov" 
+ ,"PctLess9thGrade" 
+ ,"PctNotHSGrad" 
+ ,"PctBSorMore" 
+ ,"PctUnemployed" 
+ ,"PctEmploy" 
+ ,"PctEmplManu" 
+ ,"PctEmplProfServ" 
+ ,"PctOccupManu" 
+ ,"PctOccupMgmtProf" 
+ ,"MalePctDivorce" 
+ ,"MalePctNevMarr" 
+ ,"FemalePctDiv" 
+ ,"TotalPctDiv" 
+ ,"PersPerFam" 
+ ,"PctFam2Par" 
+ ,"PctKids2Par" 
+ ,"PctYoungKids2Par" 
+ ,"PctTeen2Par" 
+ ,"PctWorkMomYoungKids" 
+ ,"PctWorkMom" 
+ ,"NumIlleg" 
+ ,"PctIlleg" 
+ ,"NumImmig" 
+ ,"PctImmigRecent" 
+ ,"PctImmigRec5" 
+ ,"PctImmigRec8" 
+ ,"PctImmigRec10" 
+ ,"PctRecentImmig" 
+ ,"PctRecImmig5" 
+ ,"PctRecImmig8" 
+ ,"PctRecImmig10" 
+ ,"PctSpeakEnglOnly" 
+ ,"PctNotSpeakEnglWell" 
+ ,"PctLargHouseFam" 
+ ,"PctLargHouseOccup" 
+ ,"PersPerOccupHous" 
+ ,"PersPerOwnOccHous" 
+ ,"PersPerRentOccHous" 
+ ,"PctPersOwnOccup" 
+ ,"PctPersDenseHous" 
+ ,"PctHousLess3BR" 
+ ,"MedNumBR" 
+ ,"HousVacant" 
+ ,"PctHousOccup" 
+ ,"PctHousOwnOcc" 
+ ,"PctVacantBoarded" 
+ ,"PctVacMore6Mos" 
+ ,"MedYrHousBuilt" 
+ ,"PctHousNoPhone" 
+ ,"PctWOFullPlumb" 
+ ,"OwnOccLowQuart" 
+ ,"OwnOccMedVal" 
+ ,"OwnOccHiQuart" 
+ ,"RentLowQ" 
+ ,"RentMedian" 
+ ,"RentHighQ" 
+ ,"MedRent" 
+ ,"MedRentPctHousInc" 
+ ,"MedOwnCostPctInc" 
+ ,"MedOwnCostPctIncNoMtg" 
+ ,"NumInShelters" 
+ ,"NumStreet" 
+ ,"PctForeignBorn" 
+ ,"PctBornSameState" 
+ ,"PctSameHouse85" 
+ ,"PctSameCity85" 
+ ,"PctSameState85" 
+ ,"LemasSwornFT" 
+ ,"LemasSwFTPerPop" 
+ ,"LemasSwFTFieldOps" 
+ ,"LemasSwFTFieldPerPop" 
+ ,"LemasTotalReq" 
+ ,"LemasTotReqPerPop" 
+ ,"PolicReqPerOffic" 
+ ,"PolicPerPop" 
+ ,"RacialMatchCommPol" 
+ ,"PctPolicWhite" 
+ ,"PctPolicBlack" 
+ ,"PctPolicHisp" 
+ ,"PctPolicAsian" 
+ ,"PctPolicMinor" 
+ ,"OfficAssgnDrugUnits" 
+ ,"NumKindsDrugsSeiz" 
+ ,"PolicAveOTWorked" 
+ ,"LandArea" 
+ ,"PopDens" 
+ ,"PctUsePubTrans" 
+ ,"PolicCars" 
+ ,"PolicOperBudg" 
+ ,"LemasPctPolicOnPatr" 
+ ,"LemasGangUnitDeploy" 
+ ,"LemasPctOfficDrugUn" 
+ ,"PolicBudgPerPop")
+```
+
+
+
+# Bike Sharing Data (n=731)
+URL for data: https://archive.ics.uci.edu/ml/datasets/Bike+Sharing+Dataset
+```{r bike, echo = FALSE, message = FALSE}
+# Read in the data
+bike <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/bike/day.csv', sep = ",", header = T)[c(-1,-2)]
+
+bike_binned <- bin_df(bike, "cnt")
+bike_encoded <- bike_binned[,c(-(ncol(bike_binned)-1),-ncol(bike_binned))]
+train_index <- sample(1:nrow(bike_encoded), nrow(bike_encoded)*0.7)
+bike_train <- bike_encoded[train_index,]
+bike_test <- bike_encoded[-train_index,]
+return_df <- run_sim(train = bike_train, test = bike_test, cont_response = "cnt", cont_location = 15)
+
+
+plot_return(return_df)
+```
+
+
+# Bike Sharing Data WITH NOISE
+```{r bike_noise, echo = FALSE, message = FALSE}
+for(noise in NOISES){
+  return_df <- run_sim(train = add_noise(bike_train, "cnt", noise),
+          test = add_noise(bike_test, "cnt", noise),
+        cont_response = "cnt", cont_location = 15, 
+        noise_added = TRUE, noise_factor = noise)
+  plot_return(return_df)
+}
+```
+
+
+\newpage
+
+# Music Data (n=3943)
+```{r music, echo = FALSE, message = FALSE}
+music <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/music/music.txt', sep = ",", header = F)
+music_binned <- bin_df(music, "V61")
+music_encoded <- music_binned[,c(-(ncol(music_binned)-1),-ncol(music_binned))]
+train_index <- sample(1:nrow(music_encoded), nrow(music_encoded)*0.7)
+music_train <- music_encoded[train_index,]
+music_test <- music_encoded[-train_index,]
+return_df <- run_sim(train = music_train, test = music_test, cont_response = "V61", cont_location = 62)
+plot_return(return_df)
+```
+
+# Music Data WITH NOISE
+```{r music_noise, echo = FALSE, message = FALSE}
+for(noise in NOISES){
+  return_df <- run_sim(train = add_noise(music_train, variable = "V61", noise),
+          test = add_noise(music_test, variable = "V61", noise),
+        cont_response = "V61", cont_location = 62, 
+        noise_added = TRUE, noise_factor = noise)
+  plot_return(return_df)
+}
+```
+
+
+# Abalone Data (n=4176)
+URL for data: https://archive.ics.uci.edu/ml/datasets/abalone
+Related Work: https://www.researchgate.net/profile/Willem-Waegeman-2/publication/228350235_An_ensemble_of_weighted_support_vector_machines_for_ordinal_regression/links/0046353be578c3aa0b000000/An-ensemble-of-weighted-support-vector-machines-for-ordinal-regression.pdf
+```{r abalone, echo = FALSE, message = FALSE}
+# Read in the data
+aba <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/abalone/abalone.data', sep = ",", header = T)
+true_aba_names <- c("Sex", "Length", "Diameter", "Height", "Whole_wt", 
+                    "Shucked_wt", "Viscera_wt", "Shell_wt", "Rings")
+colnames(aba) <- true_aba_names
+
+aba_binned <- bin_df(aba, "Rings")
+aba_features <- aba_binned[,c(-11,-12)]
+aba_encoded <- dummy_cols(aba_features, select_columns = 'Sex') %>% dplyr::select(-Sex)
+
+MC <- 100
+mc_tree_length = 30
+mc_min_trees = 1
+mc_max_trees = 4
+mc_tree_set <- unique(round(10^(seq(from=mc_min_trees, to=mc_max_trees, length=mc_tree_length))))
+binned_best_mat <- matrix(NA, nrow = MC, ncol = length(mc_tree_set))
+cont_best_mat <- matrix(NA, nrow = MC, ncol = length(mc_tree_set))
+
+full_start_time = Sys.time()
+for (i in 1:MC) {
+  start_time = Sys.time()
+  cat(glue('Begin Monte Carlo Iteration {i} of {MC}'), '\n')
+  sub_sample <- sample_by_distribution(aba_encoded, size = 1000)
+  return_df <- run_sim(train = sub_sample[[1]],
+                       test = sub_sample[[2]],
+                       cont_response = "Rings",
+                       min_trees = mc_min_trees,
+                       max_trees = mc_max_trees,
+                       tree_length = mc_tree_length,
+                       plot = FALSE)
+
+  binned_best_mat[i,] <- return_df$test_mat
+  cont_best_mat[i,] <- return_df$test_cont_mat
+
+  cat(glue('--End Iteration {i} of {MC}: Completed in {round(Sys.time() - start_time,2)}'),'\n')
+}
+cat(glue('Full Run Success: Completed in {round(Sys.time() - full_start_time,2)}','\n'))
+plot_return_mc(mc_tree_set, binned_best_mat, cont_best_mat)
+```
+
+
+\newpage
+
+# Abalone Data WITH NOISE
+```{r abalone_noise, echo = FALSE, message = FALSE}
+for(noise in NOISES){
+  return_df <- run_sim(train = add_noise(aba_train, variable = "Rings", noise), 
+          test = add_noise(aba_test, variable = "Rings", noise),
+        cont_response = "Rings", cont_location = 10, 
+        noise_added = TRUE, noise_factor = noise)
+  plot_return(return_df)
+}
+```
+
+
+# Appliances Energy Data (n=19735)
+URL for dtaa: https://archive.ics.uci.edu/ml/datasets/Appliances+energy+prediction
+```{r energy, echo = FALSE, message = FALSE}
+# Read in the data
+energy <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/energy/energy.csv', sep = ",", header = T)[-1]
+
+energy_binned <- bin_df(energy, "Appliances")
+energy_encoded <- energy_binned[,c(-30,-31)]
+energy_sizes = c(100,1000,7000)
+for(size in energy_sizes){
+  return_df <- run_sim(train = sample_by_distribution(energy_encoded, size = size),
+          test = energy_encoded,
+        cont_response = "Appliances", cont_location = 2)
+  plot_return(return_df)
+}
+```
+
+
+\newpage
+
+
+
+# Appliances Energy Data WITH NOISE
+```{r energy_noise, echo = FALSE, message = FALSE}
+energy_sampled <- sample_by_distribution(energy_encoded, size = 1500)
+for(noise in NOISES){
+  return_df <- run_sim(train = add_noise(energy_sampled, "Appliances", noise),
+          test = add_noise(energy_encoded, "Appliances", noise),
+        cont_response = "Appliances", cont_location = 2, 
+        noise_added = TRUE, noise_factor = noise)
+  plot_return(return_df)
+}
+
+```
+
+
+\newpage
+
+\newpage
+
+# Census Data WITH NOISE
+```{r census_noise, echo = FALSE, message = FALSE}
+census_sampled <- sample_by_distribution(census_encoded, size = 700)
+for(noise in NOISES){
+  run_sim(train = add_noise(census_sampled, "fnlgwt", noise), 
+          test = add_noise(census_encoded, "fnlgwt", noise),
+        cont_response = "fnlgwt", cont_location = 4, 
+        noise_added = TRUE, noise_factor = noise)
+}
+```
+
+
+
+
+```{r}
+# library(e1071)
+trees <- 500
+# steel_encoded <- steel_encoded[is.finite(steel_encoded$Usage_kWh),]
+steel_sub_sample <- sample_by_distribution(steel_encoded[,c(-5,-19)], size = 26000)
+train <- steel_sub_sample[[1]]
+test <- steel_sub_sample[[2]]
+MDL <- gbm(as.numeric(class) ~ ., data = train[, names(train) != "Usage_kWh"], 
+             distribution = "gaussian", n.trees = trees, n.cores = 8, 
+             shrinkage = 0.1, interaction.depth = 1, keep.data = FALSE)
+
+train_preds <- predict(MDL, newdata = train[, (names(train) != "Usage_kWh") & 
+                                              (names(train) != "class")],
+                       n.trees = trees)
+
+test_preds <- predict(MDL, newdata = test[, (names(test) != "Usage_kWh") & 
+                                              (names(test) != "class")],
+                       n.trees = trees)
+
+# plot(x = as.numeric(train[,"class"]), 
+#      y = train_preds,
+#      main = glue('Train vs Pred for {trees} Trees'),
+#      xlab = glue("True"),
+#      ylab = glue("Train Predicted"))
+# abline(coef=c(0,1))
+
+plot(x = as.numeric(test[,"class"]), 
+     y = test_preds,
+     main = glue('Test vs Pred for {trees} Trees'),
+     xlab = glue("True"),
+     ylab = glue("Test Predicted"))
+abline(coef=c(0,1))
+MSE(y_pred = train_preds, y_true = as.numeric(train$class))
+MSE(y_pred = test_preds, y_true = as.numeric(test$class))
+
+
+binned_train_resids <- as.numeric(train$class) - train_preds
+binned_test_resids <- as.numeric(test$class) - test_preds
+
+cont_train_lm <- lm(train[,"Usage_kWh"] ~ binned_train_resids + train$class, data = train)
+cont_test_lm <- lm(test[,"Usage_kWh"] ~ binned_test_resids + test$class, data = test)
+
+train_cont_preds <- predict(cont_train_lm, type = "response")
+test_cont_preds <- predict(cont_test_lm, type = "response")
+
+# plot(x = train[,"Usage_kWh"], 
+#      y = train_cont_preds,
+#      main = glue('Train vs Pred for {trees} Trees'),
+#      xlab = glue("True"),
+#      ylab = glue("Predicted"))
+# abline(coef=c(0,1))
+
+plot(x = test[,"Usage_kWh"], 
+     y = test_cont_preds,
+     main = glue('Test vs Pred for {trees} Trees'),
+     xlab = glue("True"),
+     ylab = glue("Predicted"))
+abline(coef=c(0,1))
+
+
+sqrt(MSE(y_pred = train_cont_preds, y_true = train[,"Usage_kWh"]))
+sqrt(MSE(y_pred = test_cont_preds, y_true = test[,"Usage_kWh"]))
+
+```
+
+
+
+
+```{r}
+# aggregate(Usage_kWh~class, FUN=max, data=steel_encoded)
+hist(steel_encoded$Usage_kWh, main = "Energy Usage (kWh)", 
+     xlab = "Usage", breaks = 105)
+abline(v=c(3.1,3.74,12.56,57.74,157.18), col='blue', lwd=0.5)
+
+hist(1/steel_encoded$Usage_kWh, main = "Inverted Energy Usage (kWh)", 
+     xlab = "Usage", breaks = 120)
+abline(v=c(0, 0.32,0.26,0.08,0.02), col='blue', lwd=0.5)
+
+hist(log(steel_encoded$Usage_kWh), main = "Logged Energy Usage (kWh)", 
+     xlab = "Usage", breaks = 70)
+abline(v=c(1.13,1.32,2.53,4.06,5.06), col='blue', lwd=0.5)
+
+
+
+hist(gas_encoded$strength, main = "Binning Compression Strength", 
+     xlab = "Usage", breaks = 55)
+abline(v=c(2.33, 20.97, 30.96, 39.05, 50.53, 82.6), col='blue', lwd=0.5)
+
+
+
+ggplot(gas_encoded, aes(x=strength)) + 
+  geom_histogram(color = "black", fill = "grey", bins = 50) +
+  theme_classic() +
+  geom_vline(xintercept = 0.7, col = "blue", linetype = "dashed", size = 1.1) +
+  geom_vline(xintercept = 20.97, col = "blue", linetype = "dashed", size = 1.1) +
+  geom_vline(xintercept = 30.96, col = "blue", linetype = "dashed", size = 1.1) +
+  geom_vline(xintercept = 39.05, col = "blue", linetype = "dashed", size = 1.1) +
+  geom_vline(xintercept = 50.53, col = "blue", linetype = "dashed", size = 1.1) +
+  geom_vline(xintercept = 84, col = "blue", linetype = "dashed", size = 1.1) +
+  labs(title = "Binning Continuous Response",
+       x = "Compression Strength",
+       y = "Count")
+  
+```
+
+
+
+
+
+
+# Temperature
+```{r}
+temp <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/temp/temperature.csv', sep = ",", header = TRUE)
+
+temp <- drop_na(temp)
+temp_binned <- bin_df(temp, "Next_Tmin")
+temp_encoded <- temp_binned[,c(-(ncol(temp_binned)-1),-ncol(temp_binned))]
+temp_encoded <- temp_encoded[,c(-3,-25)]
+
+
+MC <- 5
+mc_tree_length = 20
+mc_min_trees = 1
+mc_max_trees = 4.7
+mc_tree_set <- unique(round(10^(seq(from=mc_min_trees, to=mc_max_trees, length=mc_tree_length))))
+binned_best_mat <- matrix(NA, nrow = MC, ncol = length(mc_tree_set))
+cont_best_mat <- matrix(NA, nrow = MC, ncol = length(mc_tree_set))
+
+full_start_time = Sys.time()
+for (i in 1:MC) {
+  start_time = Sys.time()
+  cat(glue('Begin Monte Carlo Iteration {i} of {MC}'), '\n')
+  sub_sample <- sample_by_distribution(temp_encoded, size = 700)
+  return_df <- run_sim(train = sub_sample[[1]],
+                       test = sub_sample[[2]],
+                       cont_response = "Next_Tmin",
+                       min_trees = mc_min_trees,
+                       max_trees = mc_max_trees,
+                       tree_length = mc_tree_length,
+                       plot = FALSE)
+
+  binned_best_mat[i,] <- return_df$test_mat
+  cont_best_mat[i,] <- return_df$test_cont_mat
+
+  cat(glue('--End Iteration {i} of {MC}: Completed in {round(Sys.time() - start_time,2)}'),'\n')
+}
+cat(glue('Full Run Success: Completed in {round(Sys.time() - full_start_time,2)}','\n'))
+plot_return_mc(mc_tree_set, binned_best_mat, cont_best_mat)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+Turbine Data: https://archive.ics.uci.edu/ml/datasets/Gas+Turbine+CO+and+NOx+Emission+Data+Set
+Related works: https://journals.tubitak.gov.tr/cgi/viewcontent.cgi?article=1505&context=elektrik
+```{r}
+# Read in the data
+# t1 <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/turbine/gt_2011.csv', sep = ",", header = T)
+# t2 <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/turbine/gt_2012.csv', sep = ",", header = T)
+# t3 <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/turbine/gt_2013.csv', sep = ",", header = T)
+# t4 <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/turbine/gt_2014.csv', sep = ",", header = T)
+# t5 <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/turbine/gt_2015.csv', sep = ",", header = T)
+# 
+# turbine <- rbind(t1,t2,t3,t4,t5)
+# # turbine$TEY <- log(turbine$TEY)
+# 
+# turbine_binned <- bin_df(turbine, "TEY")
+# turbine_encoded <- turbine_binned[,c(-13,-14)]
+# 
+# SIZES = unique(round(10^(seq(from=1, to=3.5, length=20))))*5
+# 
+# MC <- 25
+# mc_min_trees = 1
+# mc_max_trees = 2.7
+# binned_best_trees_mat <- matrix(NA, nrow = MC, ncol = length(SIZES))
+# cont_best_trees_mat <- matrix(NA, nrow = MC, ncol = length(SIZES))
+# 
+# full_start_time = Sys.time()
+# for(i in 1:MC){
+#   start_time = Sys.time()
+#   cat(glue('Begin Monte Carlo Iteration {i} of {MC}'), '\n')
+#   for (j in 1:length(SIZES)){
+#     cat(glue('----Begin Iteration {j} of {length(SIZES)} with n = {SIZES[j]}', '\n', '\n'))
+#     size_sample <- sample_by_distribution(turbine_encoded, size = SIZES[j])
+#     return_df <- run_sim(train = size_sample[[1]],
+#                          test = size_sample[[2]],
+#                          cont_response = "TEY",
+#                          min_trees = mc_min_trees,
+#                          max_trees = mc_max_trees,
+#                          tree_length = 20,
+#                          plot = FALSE)
+# 
+#     binned_thresh <- min(return_df$test_mat) * 1.01
+#     cont_thresh <- min(return_df$test_cont_mat) * 1.01
+# 
+#     binned_best_trees_mat[i,j] <- min(return_df[which(return_df$test_mat <= binned_thresh),
+#                                                 "tree_set"])
+#     cont_best_trees_mat[i,j] <- min(return_df[which(return_df$test_cont_mat <= cont_thresh),
+#                                                 "tree_set"])
+#   }
+#   cat(glue('End Iteration {i} of {MC}: Completed in {round(Sys.time() - start_time,2)}'),'\n')
+# }
+# cat(glue('Full Run Success: Completed in {round(Sys.time() - full_start_time,2)}','\n'))
+# plot_best_tree_mc(return_df, binned_best_trees_mat, cont_best_trees_mat)
+```
+
+
+# Sources
+Jitter function: https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/jitter

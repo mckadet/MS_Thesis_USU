@@ -1,0 +1,336 @@
+---
+title: "STAT 6100: Advanced Regression, Homework 03: Multivariate Regression & Penalized Methods (115 Points)"
+author: "McKade Thomas"
+output: pdf_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
+library(glmnet)
+library(DescTools)
+library(bestNormalize)
+library(mvtnorm)
+library(tidyverse)
+library(ggplot2)
+library(GGally)
+library(gridExtra)
+library(glue)
+library(corrplot)
+```
+
+
+
+## Question 1: (50 points)
+**Book Problem**: 
+Answer all parts of chapter 6 question 4 from the book. In addition to providing your answers based on your existing knowledge, use the chunk below to write a simulation to empirically verify each of these answers. I have provided sample code to generate sample data ($X$ & $y$), however you will need to write the code to train and test a ridge regression model on the samples and embed the process within a 100-iteration Monte-Carlo simulation. 
+
+Your responses to parts A-E should contain your predicted shape (i-v) as well as a plot illustrating each shape for your simulation. 
+
+**Note:** If you don't feel that you can be sure of the shape given the information provided, explain why and briefly describe what shapes you might expect under certain circumstances. 
+
+
+
+```{r}
+n <- 10
+d <- 2
+MC <- 100
+B <- c(1.2, -0.8)
+Bn <- 0.1
+
+lset <- 10^(seq(from = -8, to = 0, by = 0.2))
+Rho <- 0.9999
+Sigma <- matrix(c(1, Rho, Rho, 1), ncol = 2)
+
+X <- rmvnorm(n, c(0, 0), Sigma)
+y <- X %*% B + Bn * rnorm(n)
+
+```
+\newpage
+a. Training RSS
+iii. steadily increase. I would expect the RSS for training to steadily increase. because larger values of lambda result in a larger penalty term, which increases our RSS over time.
+
+```{r train}
+run_sim <- function(reps = 100, train_size = 6, train = TRUE, metric = "RSS"){
+  pb <- txtProgressBar(min = 0,      # Minimum value of the progress bar
+                     max = length(reps), # Maximum value of the progress bar
+                     style = 3,    # Progress bar style (also available style = 1 and style = 2)
+                     width = 50,   # Progress bar width. Defaults to getOption("width")
+                     char = "=")
+  rss_mat <- matrix(NA, nrow = reps, ncol = length(lset))
+  for (i in 1:reps){
+    X <- rmvnorm(n, c(0, 0), Sigma)
+    y <- X %*% B + Bn * rnorm(n)
+    
+    train_index <- sample(1:nrow(X), train_size)
+
+    for (j in 1:length(lset)){
+      MDL <- glmnet(X[train_index,], y[train_index,], nlambda = 1, alpha = 0, family = "gaussian", lambda = lset[j])
+      if (metric == "RSS"){
+        if (train){
+          rss_mat[i,j] <- deviance(MDL)
+        } 
+        else {
+          preds <- predict(MDL, newx = X[-train_index,])
+          rss_mat[i,j] <- sum((y[-train_index] - preds)^2)
+        }
+      } else if (metric == "Var"){
+          rss_mat[i,j] <- var(as.matrix(MDL$beta))
+      } else if (metric == "Bias"){
+          rss_mat[i,j] <- MDL$beta[1]
+      } else if (metric == "Eps"){
+          rss_mat[i,j] <- mean((y - (X %*% B))^2)
+      } else{
+        stop('Invalid Metric Supplied')
+      }
+    }
+    
+    setTxtProgressBar(pb, i)
+  }
+  return(colMeans(rss_mat))
+}
+
+plot(log(lset), log(run_sim()), 
+     main = "RSS Train for Increasing Lambda Vals",
+     ylab = "RSS", 
+     xlab = "Logged Lambda")
+
+```
+
+\newpage
+b. Test RSS
+ii. Decrease initially, and then eventually start increasing in a
+U shape.
+I would expect the test RSS to decrease at first as lambda increases, then steadily increase. As lambda increases initially, we will see smaller coefficients and account for multi-collinearity. However, as lambda continues to increase for the test set we will see RSS increase as this effect is overcompensated.
+```{r test}
+plot(log(lset), log(run_sim(train = FALSE)), 
+     main = "RSS Test for Increasing Lambda Vals",
+     ylab = "RSS", 
+     xlab = "Logged Lambda")
+```
+
+\newpage
+c. Variance
+iv. steadily decrease. I would expect the variance to decrease as lambda increases. With a larger lambda value, the flexibility of ridge fit decreases due to a larger coefficients, resulting in smaller variance of the beta estimates.
+```{r var}
+plot(log(lset), log(run_sim(metric = "Var")), 
+     main = "Variance for Increasing Lambda Vals",
+     ylab = "Variance", 
+     xlab = "Logged Lambda")
+```
+\newpage
+d. Bias-Squared
+iii. steadily increase I would expect the bias to increase as lambda increases. With a larger lambda value, the flexibility of ridge fit decreases due to a larger coefficients. With a larger beta vector and less flexibility, bias will continue to increase.
+ 
+```{r bias}
+plot(log(lset), log((run_sim(metric = "Bias") - B[1])^2), 
+     main = "Bias for Increasing Lambda Vals",
+     ylab = "Bias", 
+     xlab = "Logged Lambda")
+```
+
+\newpage
+e. Irreducible Error
+v. Remain constant. I would expect the irreducible error to be unchanged by an increase or decrease in lambda. The irreducible error depends on our true values for predictor, X vector, and Beta values. The true Beta values will be unchanged by an lambda so only our data changes the error term. 
+```{r error}
+plot(log(lset), sqrt(run_sim(metric = "Eps")), 
+     main = "Error for Increasing Lambda Vals",
+     ylab = "Irreducible Error", 
+     xlab = "Logged Lambda")
+```
+
+
+\newpage
+## Question 2: (20 points)
+**Understanding Trace Plots**: 
+For this problem you will be given a set of latent variables ($z_1, z_2, z_3$), as well as the definition for $y$, which is a linear combination of $z_1$ and $z_2$ ($z_3$ is an extraneous noise variable. These variables are defined in the chunk below. 
+
+Your goal for this problem will be to define the observable variables ($x_1,x_2,x_3$) that will yield the trace plots provided (for a LASSO model). All the necessary code is provided for you EXCEPT the definitions of the $x$ variables, which should each be expressed as a linear combination of the latent variables. In essence, your task is to find the 3 coefficients for each $x$:
+$$x_i=c_{i,1}z_1+c_{i,2}z_2+c_{i,3}z_3$$
+that will yield the desired trace plot. 
+
+**HINT 1:** Not all of your observable variables will be based on all 3 latent variables (i.e. around half the coefficients mapping $z$ to $x$ will be zero).
+
+**HINT 2:** You don't need to use more than 1 decimal point for your $c$-values. 
+
+```{r trace_dat}
+set.seed(1)
+lset <- 10^(seq(from = -8, to = 2, by = 0.2))
+z1 <- rnorm(n)
+z2 <- rnorm(n)
+z3 <- rnorm(n)
+y <- 0.6 * z1 + 0.4 * z2
+```
+\newpage
+a. Define each $x$ in order to acheive the trace plot below. 
+
+
+![Target trace plot for part B](TracePlotA.jpeg)
+\newpage
+```{r trace1}
+x1 <- z1
+x2 <- z2
+x3 <- 1.2 * z1 + 0.8 * z2 + 0.2 * z3
+
+X <- cbind(x1, x2, x3)
+
+MDL <- glmnet(X, y, alpha = 1, lambda = lset, standardize = F)
+plot(MDL, xvar = "lambda")
+legend(x = "topright", legend = c("x1", "x2", "x3"), lty = 1, col = 1:3)
+```
+
+\newpage
+b.  Define each $x$ in order to acheive the trace plot below. 
+
+
+![Target trace plot for part B](TracePlotB.jpeg)
+\newpage
+```{r trace2}
+x1 <- z1 + 0.1 * z3
+x2 <- z2 + 0.1 * z3
+x3 <- 0.3 * z1 + 0.2 * z2
+X <- cbind(x1, x2, x3)
+
+MDL <- glmnet(X, y, alpha = 1, lambda = lset, standardize = F)
+
+plot(MDL, xvar = "lambda")
+legend(x = "topright", legend = c("x1", "x2", "x3"), lty = 1, col = 1:3)
+```
+
+
+
+
+\newpage
+
+## Question 3: (45 points)
+**Diamond Data**: This final problem focuses on Kaggle's diamond price dataset. Before beginning this problem, it might be helpful to visit the link below and familiarize yourself with the data you will be looking at.
+
+https://www.kaggle.com/shivam2503/diamonds
+
+The below code will load the diamond data into Dat, subset the data to only look at a few of the initial variables, then build and summarize a linear model to predict price. 
+```{r diamonds}
+Dat <- read.csv("diamonds.csv")
+
+dat <- Dat[, c("carat", "x", "y", "z", "price")]
+p <- ncol(dat) - 1
+
+X <- dat[, -(p + 1)]
+y <- dat$price
+
+LM <- lm(price ~ ., data = dat)
+summary(LM)
+```
+**Problem:** Although the model above achieves a high $R^2$-value, there are a number of issues with the model / data that haven't been accounted for. Identify and describe three issues in the prompts below, then use the associated chunks to address the issue and report a summary of the new model. 
+
+**IMPORTANT** Each model should build on the previous model! If the model you report for part c does not also address the problems identified in parts a \& b, you will lose points!
+
+**Note** Don't remove any attributes. Your summary for each part should include coefficients for each of the four input variables.
+
+\newpage
+a. **ISSUE 1:** 
+The first issue we see with these data are that there appears to be come corrupted data. Some of the values for x, y, and z are 0 or very extreme, likely due to mis-input or recording of these features. It shouldn't be possible for a characteristic of the diamond to be 0, so these values are not valid. We also see many potential outliers in each predictor variable. To address this, we can filter out the values that are 0 and some of the other extreme values.
+
+After doing so, we see that the performance of OLS regression did increase in terms of Adjusted R-squared Residual standard error.
+```{r outliers}
+## Explore Distributions of Explanatory Variables
+cat('Distributions of each explanatory variable.')
+g1 <- ggplot(dat) + 
+  geom_boxplot(aes(carat)) +
+  theme_classic()
+
+g2 <- ggplot(dat) + 
+  geom_boxplot(aes(x)) +
+  theme_classic()
+
+g3 <- ggplot(dat) + 
+  geom_boxplot(aes(y)) +
+  theme_classic()
+
+g4 <- ggplot(dat) + 
+  geom_boxplot(aes(z)) +
+  theme_classic()
+
+grid.arrange(g1, g2, g3, g4, nrow = 2)
+
+## Filter Values
+clean <-dat %>% 
+  filter(x > 0, y > 0, z > 0) %>% 
+  filter(x < max(x) - 1,
+         y < max(y) - 30,
+         z < max(z) - 10)
+
+cat('Distributions of each explanatory variable without outliers.')
+o1 <- ggplot(clean) + 
+  geom_boxplot(aes(carat)) +
+  theme_classic()
+
+o2 <- ggplot(clean) + 
+  geom_boxplot(aes(x)) +
+  theme_classic()
+
+o3 <- ggplot(clean) + 
+  geom_boxplot(aes(y)) +
+  theme_classic()
+
+o4 <- ggplot(clean) + 
+  geom_boxplot(aes(z)) +
+  theme_classic()
+
+grid.arrange(o1, o2, o3, o4, nrow = 2)
+
+## Perform Regression again with cleaner data
+cat('OLS Regression w/out Outliers')
+summary(lm(price ~ ., data = clean))
+```
+
+\newpage
+b.  **ISSUE 2:** 
+The second issue we see is due to the trend in both price and the explanatory variables appearing to be non-normal. Because OLS makes the assumption of normality, we can perform a log transformation to help with this issue. We see that the log transformation results in much more "normal" appearing data for nearly all the explanatory variables and our predictor for price.
+
+After performing OLS regression again with the log transformation and having still filtered out corrupted data, we again see an increase in performance from the second OLS model in terms of Adjusted R-squared and residual standard error.
+```{r transformation}
+log_compare <- function(var){
+  p1 <- ggplot(clean, aes(.data[[var]])) + 
+  geom_histogram(bins = 18) +
+  theme_classic() + ggtitle(glue("{var} (w/out outliers)"))
+
+  p2 <- ggplot(clean, aes(log(.data[[var]]))) + 
+  geom_histogram(bins = 18) +
+  theme_classic() + ggtitle(glue("Logged {var}"))
+  grid.arrange(p1, p2, nrow = 1)
+}
+
+log_compare("price")
+log_compare("carat")
+log_compare("x")
+log_compare("y")
+log_compare("z")
+
+cat('OLS Regression w/Transformation and w/out Outliers')
+LM <- lm(price ~ ., data = log(dat + 1))
+summary(LM)
+```
+
+
+
+\newpage
+c. **ISSUE 3:** 
+The final issue I noted with this data is multicollinearity between our explanatory variables. Looking at the correlation between our variables, there appears to be very high collinearity (near 1). This means that the same information is represented to the model by each of the variables nearly perfectly. To account for this, we can perform a LASSO regression using the Logged data and still with the removal of the corrupted values.
+
+Though our R-squared value is now pseuod, it does show an increase from previous OLS models. This model helps us therefore account for all three issues of corruption, normality, and multicollinearity.
+```{r multicollinearity}
+## Investigate Correlation
+cat('Correlation Matrix for Explanatory Variables \n')
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(cor(clean[,1:4]), method="color", col=col(200), 
+         addCoef.col = "black", 
+         tl.col="black", tl.srt=45)
+
+cat('Relationships for Explanatory Vars \n')
+# ggpairs(clean[,1:4])
+
+cat('LASSO Regression w/ Transformation and w/out Outliers \n')
+mdl <- glmnet(log(clean[,1:4]), log(clean[,5]), alpha = 1, family = "gaussian")
+glue('Pseudo R^2: {round(max(mdl$dev.ratio), 4)}')
+glue('Estimated E(Beta): {round(rowMeans(as.matrix(mdl$beta)),5) %>% list()}')
+```

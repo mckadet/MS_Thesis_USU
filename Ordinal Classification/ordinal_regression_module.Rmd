@@ -1,0 +1,267 @@
+---
+title: "ordinal_regression"
+author: "McKade Thomas"
+date: "2/10/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## GridsearchCV: https://machinelearningmastery.com/tune-machine-learning-algorithms-in-r/
+
+```{r libraries, include = FALSE}
+## Libraries Needed
+library(tidyverse)
+library(ggplot2)
+library(GGally)
+library(glue)
+library(plyr)
+library(randomForest)
+library(neuralnet)
+library(caret)
+library(gridExtra)
+
+PREDICTOR_VAR = "Median_House_Value"
+TRAIN_TEST_SPLIT = 0.70
+features <- c("class", "Lat", "Long", "Housing_Median_Age", "Block_Rooms",
+              "Bedrooms", "Population", "Households", "Income", "id")
+PERF_CRITERIA = "RMSE"
+
+```
+
+
+```{r Helper Methods, echo = FALSE}
+## Bin the data by distribution
+bin_df <- function(df, bin_val, num_bins = 5){
+  df %>% 
+    mutate(class = cut(df[,bin_val],
+                       breaks = c(quantile(df[,bin_val], probs = seq(0, 1, by = 1 / num_bins))), 
+                       labels = FALSE, include.lowest = TRUE),
+           bins = cut(df[,bin_val],
+                      breaks = c(quantile(df[,bin_val], probs = seq(0, 1, by = 1 / num_bins))), 
+                      include.lowest = TRUE)) -> df
+  df$class <- as.factor(df$class)
+  
+  ## Assign average class median house value
+  aggregate(Median_House_Value ~ class, FUN = mean, data = df) %>%
+    merge(x = df, y = ., by = "class") -> average_binned
+    names(average_binned)[names(average_binned) == glue('{bin_val}.y')] <- "Class_Avg_Value"
+    names(average_binned)[names(average_binned) == glue('{bin_val}.x')] <- bin_val
+    
+  return(average_binned)
+}
+
+get_mse <- function(y, y_preds){
+  sum((y - y_preds)^2) / length(y)
+}
+
+reg_output <- function(model, binned_df){
+  preds <- predict(model)
+  res <- model$residuals
+  resid <- binned_df$Median_House_Value - preds
+  hist(resid)
+  
+  ggplot(binned_df, aes(x = resid / 1000, y = Median_House_Value / 1000, col = as.factor(class))) + 
+    geom_point() + 
+    theme_classic() +
+    xlab("Residual") + ylab("Median_House_Value")
+}
+
+```
+
+
+
+```{r data}
+## Read in the data
+df <- read.table("cal_housing.data", sep = ",")
+colnames(df) <- c("Long", "Lat", "Housing_Median_Age", "Block_Rooms",
+                  "Bedrooms", "Population", "Households", "Income", "Median_House_Value")
+
+write.csv(df, 'cal_housing_clean.csv', row.names = FALSE)
+## Add id column
+df$id <- 1:nrow(df) %>% 
+  as.factor()
+
+## Subset from 0 to 200k
+df %>% 
+  filter(Median_House_Value >= 0 & Median_House_Value <= 200000) -> subset
+
+## Bin data by y, assign class and group average
+binned_data <- bin_df(subset, PREDICTOR_VAR)
+```
+
+
+# RF
+```{r}
+# split into test and train
+## Split into train and tests
+train <- binned_data %>% sample_frac(TRAIN_TEST_SPLIT) %>% select(features)
+test  <- anti_join(binned_data, train, by = 'id')
+
+# Create model with default paramters
+control <- trainControl(method="repeatedcv", number=2, repeats=1, search="grid")
+set.seed(42)
+tunegrid <- expand.grid(.mtry=c(1:9))
+rf_gridsearch <- train(as.numeric(class) ~ ., 
+                       data = train %>% select(-id),
+                       method="rf",
+                       ntree = 25,
+                       preProc = c("center", "scale"),
+                       tuneGrid = tunegrid, 
+                       trControl = control)
+
+print(rf_gridsearch)
+plot(rf_gridsearch)
+```
+
+
+```{r}
+# Options for Criteria: Rsquared, RMSE, MAE 
+PERF_CRITERIA = "Rsquared"
+
+results <- rf_gridsearch$results
+
+g1 <- ggplot(results, aes(x = mtry, y = .data[[PERF_CRITERIA]])) + 
+  geom_point() +
+  geom_smooth(se=F, method = "loess") +
+  theme_classic() +
+  ggtitle(glue("Performance on Labels: {PERF_CRITERIA}"))
+
+g2 <- ggplot(results, aes(x = mtry, y = RMSE)) + 
+  geom_point() +
+  geom_smooth(se=F, method = "loess") +
+  theme_classic() +
+  ggtitle(glue("Performance on Labels: RMSE"))
+
+g3 <- ggplot(results, aes(x = mtry, y = MAE)) + 
+  geom_point() +
+  geom_smooth(se=F, method = "loess") +
+  theme_classic() +
+  ggtitle(glue("Performance on Labels: MAE"))
+
+grid.arrange(g1, g2, g3, nrow = 2)
+```
+
+
+
+# RF
+```{r}
+feature_subset <- c("class", "Housing_Median_Age", "Bedrooms", "Population", "id")
+train <- binned_data %>% sample_frac(.5) %>% select(features)
+test  <- anti_join(binned_data, train, by = 'id')
+
+# Create model with default paramters
+control <- trainControl(method="repeatedcv", number=2, repeats=1, search="grid")
+# control <- trainControl(method = "none")
+set.seed(42)
+tune.grid.neuralnet <- data.frame(
+  layer1 = c(2, 4, 6, 8, 10, 12, 14, 16, 18, 20),
+  layer2 = 0,
+  layer3 = 0
+)
+nn_gridsearch <- train(as.numeric(class) ~ ., 
+                       data = train %>% select(-id),
+                       method = "neuralnet",
+                       threshold = 0.1,
+                       rep = 1,
+                       preProc = c("center", "scale"),
+                       tuneGrid = tune.grid.neuralnet, 
+                       trControl = control)
+
+print(nn_gridsearch)
+plot(nn_gridsearch)
+```
+
+
+```{r}
+# Options for Criteria: Rsquared, RMSE, MAE 
+PERF_CRITERIA = "Rsquared"
+
+results <- nn_gridsearch$results
+
+g1 <- ggplot(results, aes(x = mtry, y = .data[[PERF_CRITERIA]])) + 
+  geom_point() +
+  geom_smooth(se=F, method = "loess") +
+  theme_classic() +
+  ggtitle(glue("Performance Based on {PERF_CRITERIA}"))
+
+g2 <- ggplot(results, aes(x = mtry, y = RMSE)) + 
+  geom_point() +
+  geom_smooth(se=F, method = "loess") +
+  theme_classic() +
+  ggtitle(glue("Performance Based on RMSE"))
+
+g3 <- ggplot(results, aes(x = mtry, y = MAE)) + 
+  geom_point() +
+  geom_smooth(se=F, method = "loess") +
+  theme_classic() +
+  ggtitle(glue("Performance Based on MAE"))
+
+grid.arrange(g1, g2, g3, nrow = 2)
+```
+
+
+
+
+
+# ANN
+```{r}
+vertices <- c(2, 4, 8, 16, 32, 64)
+all_discrete_mse <- c()
+uninformed_discrete_mse <- c()
+
+all_cont_mse <- c()
+uninformed_cont_mse <- c()
+for (i in 1:length(vertices)){
+  # nn <- neuralnet(as.numeric(class) ~ Population + 
+  #                    Housing_Median_Age +
+  #                    Block_Rooms +
+  #                    Bedrooms +
+  #                    Households +
+  #                    Income, data = train, hidden = vertices[i],
+  #                  linear.output = FALSE)
+  rf <- randomForest(as.numeric(class) ~ Population + 
+                     Housing_Median_Age +
+                     Block_Rooms +
+                     Bedrooms +
+                     Households +
+                     Income, data = train, mtry = 3, ntree = 100,
+                   importance = TRUE, na.action = na.omit)
+  
+  Res <- as.numeric(test$class) - predict(nn, newdata = test)
+  LM <- lm(Median_House_Value ~ Res + as.factor(class), test)
+  LM2 <- lm(Median_House_Value ~ as.factor(class), test)
+  all_discrete_mse <- c(all_discrete_mse, get_mse(test$Median_House_Value, predict(LM, newdata = test)))
+  uninformed_discrete_mse <- c(uninformed_discrete_mse, get_mse(test$Median_House_Value, predict(LM, newdata = test)))
+  
+  # LM <- lm(Median_House_Value~Res+as.factor(class), test)
+  # LM2 <- lm(Median_House_Value~as.factor(class), test)
+  # all_discrete_mse <- c(all_discrete_mse, get_mse(test$Median_House_Value, predict(LM, newdata = test)))
+  # uninf_discrete_mse <- c(all_discrete_mse, get_mse(test$Median_House_Value, predict(LM, newdata = test)))
+}
+
+cbind(all_discrete_mse, uninf_discrete_mse) %>% 
+  as.data.frame()
+  # ggplot(., aes(x = vertices, y = all_discrete_mse)) + geom_line()
+```
+
+
+```{r}
+  nn <- neuralnet(as.numeric(class) ~ Population + 
+                     Housing_Median_Age +
+                     Block_Rooms +
+                     Bedrooms +
+                     Households +
+                     Income, data = train, hidden = c(3,2),
+                   linear.output = FALSE)
+  
+  Res <- as.numeric(test$class) - predict(nn, newdata = test)
+  LM <- lm(Median_House_Value ~ Res + as.factor(class), test)
+  LM2 <- lm(Median_House_Value ~ as.factor(class), test)
+  all_discrete_mse <- c(all_discrete_mse, get_mse(test$Median_House_Value, predict(LM, newdata = test)))
+  uninformed_discrete_mse <- c(uninformed_discrete_mse, get_mse(test$Median_House_Value, predict(LM, newdata = test)))
+```
+
+

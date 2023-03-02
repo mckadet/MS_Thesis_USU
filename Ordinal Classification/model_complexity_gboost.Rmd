@@ -1,0 +1,456 @@
+---
+title: "Model Complexity for Gradient Boosting"
+author: "McKade Thomas"
+date: "7/11/2022"
+output:
+  pdf_document:
+    extra_dependencies: ["float"]
+---
+
+```{r init, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.pos = "!H", fig.show="hold", out.extra = "")
+```
+
+```{r setup, include = FALSE}
+source('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/ordinal_helper_methods.R')
+source('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/main_helper_methods.R')
+library(glmnet)
+library(pROC)
+library(MLmetrics)
+library(corrplot)
+library(kableExtra)
+library(gbm)
+library(fastDummies)
+library(parallel)
+library(tidyverse)
+library(rmatio)
+library(foreach)
+library(doParallel)
+library(ggplot2)
+library(gridExtra)
+library(corrplot)
+library(randomForest)
+library(arules)
+
+# discretize(steel_encoded$Usage_kWh, breaks = 5)
+
+## GLOBALS
+MC_run = 50
+MAX = 4
+LEN = 40
+```
+
+# Steel Industry Energy Consumption Data (n=35040)
+URL for data: https://archive.ics.uci.edu/ml/datasets/Steel+Industry+Energy+Consumption+Dataset
+URL related work: https://www.tandfonline.com/doi/pdf/10.1080/09613218.2020.1809983?casa_token=VodoKalAs6AAAAAA:z6W4_oqbI5XKj41VsyKPs8FYZVnXyYoUBYhtgdTnFcKdj3V9BCXcYcgvkUbGadB-435p7MiF2w
+# Goal for RMSE from paper: 5.69
+```{r}
+# Read in the data
+steel <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/steel/steel.csv', sep = ",", header = TRUE)[-1]
+
+# # steel$Usage_kWh <- log(steel$Usage_kWh)
+# # steel <- steel[is.finite(steel$Usage_kWh),]
+# # steel$Usage_kWh <- abs(steel$Usage_kWh - mean(steel$Usage_kWh))
+# steel$rank <- order(steel$Usage_kWh)
+# steel_binned <- bin_df(steel, "rank")
+# steel_encoded <- steel_binned[,c(-(ncol(steel_binned)-1),-ncol(steel_binned))]
+# cols_to_encode = c("WeekStatus", "Day_of_week", "Load_Type")
+# steel_encoded <- dummy_cols(steel_encoded, select_columns = cols_to_encode) %>%
+#                         dplyr::select(-all_of(cols_to_encode))
+# cols_to_convert <- names(steel_encoded[,9:20])
+# # cols_to_convert <- c("WeekStatus", "Day_of_week", "Load_Type")
+# steel_encoded[cols_to_convert] <- lapply(steel_encoded[cols_to_convert], factor)
+# steel_encoded <- steel_encoded[,c(-5,-19)]
+# # cols_to_scale <- c("Lagging_Current_Reactive.Power_kVarh","Leading_Current_Reactive_Power_kVarh", "NSM",
+# #                   "Lagging_Current_Power_Factor", "Leading_Current_Power_Factor")
+# # steel_encoded[cols_to_scale] <- lapply(steel_encoded[cols_to_scale], scale)
+
+
+steel <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/steel/steel.csv', sep = ",", header = TRUE)[-1]
+# steel$rank <- rank(steel$Usage_kWh)
+# steel_binned <- bin_df(steel, "rank")
+
+steel_binned <- bin_df(steel, "Usage_kWh")
+steel_encoded <- steel_binned[,c(-(ncol(steel_binned)-1),-ncol(steel_binned))]
+steel_encoded$WeekStatus <- as.factor(steel_encoded$WeekStatus)
+steel_encoded$Day_of_week <- as.factor(steel_encoded$Day_of_week)
+steel_encoded$Load_Type <- as.factor(steel_encoded$Load_Type)
+
+orchestrate_sim(dataset = steel_encoded, cont_response = "Usage_kWh", sample_size = 1000, MC = MC_run, 
+                mc_min_trees = 0, mc_max_trees = MAX, full = steel_encoded, mc_tree_length = LEN) 
+```
+
+
+```{r}
+# Read in the data
+steel <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/steel/steel.csv', sep = ",", header = TRUE)[-1]
+
+
+## RANKING
+# steel$rank <- rank(steel$Usage_kWh)
+steel_binned <- bin_df(steel, "Usage_kWh", num_bins = 10)
+steel_encoded <- steel_binned[,c(-(ncol(steel_binned)-1),-ncol(steel_binned))]
+steel_encoded$WeekStatus <- as.factor(steel_encoded$WeekStatus)
+steel_encoded$Day_of_week <- as.factor(steel_encoded$Day_of_week)
+steel_encoded$Load_Type <- as.factor(steel_encoded$Load_Type)
+
+orchestrate_sim(dataset = steel_encoded, cont_response = "Usage_kWh", sample_size = 1000, MC = MC_run, 
+                mc_min_trees = 0, mc_max_trees = MAX, full = steel_encoded, num_classes = 10, mc_tree_length = LEN)
+```
+
+
+
+
+
+\newpage
+# Superconductivity Data
+
+related work: https://arxiv.org/pdf/1803.10260.pdf
+# Goal for RMSE from Paper: 9.4
+```{r turbine}
+conduct <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/conduct/train.csv', sep = ",", header = TRUE)
+response <- "critical_temp"
+conduct_names <- c(
+  response, "range_ThermalConductivity","wtd_std_ThermalConductivity","range_atomic_radius",
+  "wtd_gmean_ThermalConductivity","std_ThermalConductivity","wtd_entropy_Valence",
+  "wtd_std_ElectronAffinity","wtd_entropy_atomic_mass","wtd_mean_Valence",
+  "wtd_gmean_ElectronAffinity","wtd_range_ElectronAffinity","wtd_mean_ThermalConductivity",
+  "wtd_gmean_Valence","std_atomic_mass","std_Density","wtd_entropy_ThermalConductivity",
+  "wtd_range_ThermalConductivity","wtd_mean_atomic_mass","wtd_std_atomic_mass","gmean_Density"
+)
+conduct <- conduct[,(names(conduct) %in% conduct_names)]
+
+# conduct$rank <- rank(conduct$critical_temp)
+# conduct_binned <- bin_df(conduct, "rank")
+
+conduct_binned <- bin_df(conduct, "critical_temp")
+conduct_encoded <- conduct_binned[,c(-(ncol(conduct_binned)-1),-ncol(conduct_binned))]
+# conduct_encoded <- conduct_encoded[,!((names(conduct_encoded) %in% c("wtd_mean_Valence", "wtd_entropy_Valence",
+#                                                   "range_ThermalConductivity", "std_ThermalConductivity",
+#                                                   "std_atomic_mass", "range_atomic_radius",
+#                                                   "wtd_range_ThermalConductivity", "gmean_Density",
+#                                                   "wtd_std_ThermalConductivity", "wtd_gmean_Valence",
+#                                                   "wtd_range_ElectronAffinity")))]
+
+orchestrate_sim(dataset = conduct_encoded, cont_response = "critical_temp", sample_size = 1000, MC = MC_run, 
+                mc_min_trees = 0, mc_max_trees = 4, mc_tree_length = LEN, full = conduct_encoded)
+```
+
+
+
+```{r}
+# conduct <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/conduct/train.csv', sep = ",", header = TRUE)
+# response <- "critical_temp"
+# conduct_names <- c(
+#   response, "range_ThermalConductivity","wtd_std_ThermalConductivity","range_atomic_radius",
+#   "wtd_gmean_ThermalConductivity","std_ThermalConductivity","wtd_entropy_Valence",
+#   "wtd_std_ElectronAffinity","wtd_entropy_atomic_mass","wtd_mean_Valence",
+#   "wtd_gmean_ElectronAffinity","wtd_range_ElectronAffinity","wtd_mean_ThermalConductivity",
+#   "wtd_gmean_Valence","std_atomic_mass","std_Density","wtd_entropy_ThermalConductivity",
+#   "wtd_range_ThermalConductivity","wtd_mean_atomic_mass","wtd_std_atomic_mass","gmean_Density"
+# )
+# conduct <- conduct[,(names(conduct) %in% conduct_names)]
+# # conduct$critical_temp <- log(conduct$critical_temp)
+# conduct_binned <- bin_df(conduct, response, num_bins = 10)
+# conduct_encoded <- conduct_binned[,c(-(ncol(conduct_binned)-1),-ncol(conduct_binned))]
+
+conduct <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/conduct/train.csv', sep = ",", header = TRUE)
+response <- "critical_temp"
+conduct_names <- c(
+  response, "range_ThermalConductivity","wtd_std_ThermalConductivity","range_atomic_radius",
+  "wtd_gmean_ThermalConductivity","std_ThermalConductivity","wtd_entropy_Valence",
+  "wtd_std_ElectronAffinity","wtd_entropy_atomic_mass","wtd_mean_Valence",
+  "wtd_gmean_ElectronAffinity","wtd_range_ElectronAffinity","wtd_mean_ThermalConductivity",
+  "wtd_gmean_Valence","std_atomic_mass","std_Density","wtd_entropy_ThermalConductivity",
+  "wtd_range_ThermalConductivity","wtd_mean_atomic_mass","wtd_std_atomic_mass","gmean_Density"
+)
+conduct <- conduct[,(names(conduct) %in% conduct_names)]
+# conduct$rank <- rank(conduct$critical_temp)
+# conduct_binned <- bin_df(conduct, "rank", num_bins = 10)
+conduct_binned <- bin_df(conduct, "critical_temp", num_bins = 10)
+conduct_encoded <- conduct_binned[,c(-(ncol(conduct_binned)-1),-ncol(conduct_binned))]
+# conduct_encoded <- conduct_encoded[,!((names(conduct_encoded) %in% c("wtd_mean_Valence", "wtd_entropy_Valence",
+#                                                   "range_ThermalConductivity", "std_ThermalConductivity",
+#                                                   "std_atomic_mass", "range_atomic_radius",
+#                                                   "wtd_range_ThermalConductivity", "gmean_Density",
+#                                                   "wtd_std_ThermalConductivity", "wtd_gmean_Valence",
+#                                                   "wtd_range_ElectronAffinity")))]
+
+
+orchestrate_sim(dataset = conduct_encoded, cont_response = "critical_temp", sample_size = 1000, MC = 20, 
+                mc_min_trees = 0, mc_max_trees = 3.5, mc_tree_length = LEN, full = conduct_encoded, num_classes = 10)
+```
+
+
+
+
+
+
+# Concrete
+URL: https://data.world/uci/concrete-compressive-strength
+Related Work: https://www.researchgate.net/publication/222447231_Modeling_of_Strength_of_High-Performance_Concrete_Using_Artificial_Neural_Networks_Cement_and_Concrete_research_2812_1797-1808
+# Goal for R2 from Paper: 0.91
+```{r}
+concrete <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/concrete/concrete.csv', sep = ",", header = TRUE)
+names <- c("cement", "blast", "fly_ash", "water", "plastic", "coarse", "fine", "age", "strength")
+colnames(concrete) <- names
+
+# concrete$rank <- rank(concrete$strength)
+# concrete_binned <- bin_df(concrete, "rank")
+
+concrete_binned <- bin_df(concrete, "strength")
+concrete_encoded <- concrete_binned[,c(-(ncol(concrete_binned)-1),-ncol(concrete_binned))]
+# concrete_encoded <- concrete_encoded[,!(names(concrete_encoded) %in% "rank")]
+
+orchestrate_sim(dataset = concrete_encoded, cont_response = "strength", sample_size = 600, MC = 50, 
+                mc_min_trees = 0, mc_max_trees = MAX, full = concrete_encoded, mc_tree_length = LEN)
+```
+
+
+# Concrete 10 classes
+```{r}
+concrete <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/concrete/concrete.csv', sep = ",", header = TRUE)
+names <- c("cement", "blast", "fly_ash", "water", "plastic", "coarse", "fine", "age", "strength")
+colnames(concrete) <- names
+
+# concrete$rank <- rank(concrete$strength)
+concrete_binned <- bin_df(concrete, "strength", num_bins = 10)
+concrete_encoded <- concrete_binned[,c(-(ncol(concrete_binned)-1),-ncol(concrete_binned))]
+# concrete_encoded <- concrete_encoded[,!(names(concrete_encoded) %in% "rank")]
+
+orchestrate_sim(dataset = concrete_encoded, cont_response = "strength", sample_size = 600, MC = 50, 
+                mc_min_trees = 0, mc_max_trees = MAX, full = concrete_encoded, num_classes = 10, mc_tree_length = LEN)
+```
+
+
+
+
+
+# Evaluate Model Performance
+```{r}
+cont_response = "Usage_kWh"
+steel <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/steel/steel.csv', sep = ",", header = TRUE)[-1]
+
+# steel$rank <- order(steel$Usage_kWh)
+steel_binned <- bin_df(steel, "Usage_kWh")
+steel_encoded <- steel_binned[,c(-(ncol(steel_binned)-1),-ncol(steel_binned))]
+steel_encoded$WeekStatus <- as.factor(steel_encoded$WeekStatus)
+steel_encoded$Day_of_week <- as.factor(steel_encoded$Day_of_week)
+steel_encoded$Load_Type <- as.factor(steel_encoded$Load_Type)
+# steel_encoded <- steel_encoded[,!(names(steel_encoded) %in% "rank")]
+
+# steel_binned <- bin_df(steel, "Usage_kWh")
+# steel_encoded <- steel_binned[,c(-(ncol(steel_binned)-1),-ncol(steel_binned))]
+# cols_to_encode = c("WeekStatus", "Day_of_week", "Load_Type")
+# steel_encoded <- dummy_cols(steel_encoded, select_columns = cols_to_encode) %>%
+#                         dplyr::select(-all_of(cols_to_encode))
+# cols_to_convert <- names(steel_encoded[,9:20])
+# # cols_to_convert <- c("WeekStatus", "Day_of_week", "Load_Type")
+# steel_encoded[cols_to_convert] <- lapply(steel_encoded[cols_to_convert], factor)
+# steel_encoded <- steel_encoded[,c(-5,-19)]
+
+# ind <- sample(1:nrow(steel_encoded), 1000)
+sub <- sample_by_distribution_ten(steel_encoded)
+train <- sub[[1]]
+test <- sub[[2]]
+# test_ranks = test$rank
+# train <- train[,names(train) != "rank"]
+# test <- test[,names(test) != "rank"]
+
+mdl <- gbm(as.numeric(class) ~ ., data = train[, names(train) != cont_response], n.trees = 100)
+
+test_preds <- predict(mdl, newdata = test[, !(names(test) %in% c("class",cont_response))],
+                          n.trees = 100)
+
+cont_test_preds <- transform_ranks(test_preds, test, nrows = nrow(steel_encoded))
+
+sqrt(MSE(y_pred = cont_test_preds, y_true = test_ranks))
+test$preds <- cont_test_preds
+sqrt(mean((test_ranks-mean(test_ranks))^2))
+
+
+ggplot(test, aes(x = test_ranks, y=preds, col = class)) + geom_point() +
+  labs(x="Actual",
+       y="Predicted") +
+  theme_classic()
+```
+
+
+
+
+
+
+# Exploratory Data Analysis
+```{r}
+steps = c(1,2,3,4,5)
+ggplot(as.data.frame(steps), aes(x = seq_along(steps), y = steps)) + 
+  geom_step(col = "grey") + geom_point(col = "grey") +
+  geom_smooth(aes(x=steps, y=steps-.5)) +
+  theme_classic() +
+  labs(x = "x",
+       y = "y")
+```
+
+
+
+```{r}
+# Class Distribution
+p1 <- ggplot(steel_encoded, aes(x=class, y=Usage_kWh, fill = class)) + 
+  geom_boxplot() + 
+  theme_classic()+ 
+  theme(legend.position = "none") +
+  labs(title = "Steel",
+       x = "Class",
+       y = "Energy Usage")
+  
+p2 <- ggplot(conduct_encoded, aes(x=class, y=critical_temp, fill = class)) +
+  geom_boxplot() + 
+  theme_classic()+ 
+  theme(legend.position = "none") +
+  labs(title = "Superconductivity",
+       x = "Class",
+       y = "Critical Temp")
+p3 <- ggplot(concrete_encoded, aes(x=class, y=strength, fill = class)) + 
+  geom_boxplot() + 
+  theme_classic() + 
+  theme(legend.position = "none") +
+  labs(title = "Concrete",
+       x = "Class",
+       y = "Compression Strength")
+
+# 
+# ggplot(steel_encoded, aes(x=class)) +
+#   geom_boxplot(aes(y=Usage_kWh)) +
+#   geom_boxplot(conduct_encoded, aes(y=critical_temp))
+# 
+# 
+# comb_boxplot <- as.data.frame(
+#   cbind(steel_encoded$class, 
+#         steel_encoded$Usage_kWh, 
+#         conduct_encoded$critical_temp,
+#         concrete_encoded$strength)
+# )
+# colnames(comb_boxplot) <- c("Class", "Usage", "Critical_Temp", "Strength")
+
+grid.arrange(p1, p2, p3, nrow=1)
+```
+
+
+
+```{r}
+library(reshape)
+steel_melt <- melt(steel[2:7])
+conduct_melt <- melt(conduct_encoded[,!(names(conduct_encoded) %in% c("class", "critical_temp"))])
+concrete_melt <- melt(concrete[1:8])
+
+plot_features(steel_melt, title = "Steel")
+plot_features(conduct_melt, title = "Conduct")
+plot_features(concrete_melt, title = "Concrete")
+
+plot_features(conduct_melt, title = "Conduct")
+```
+
+
+```{r}
+ggplot(steel_encoded, aes(x = Usage_kWh)) + 
+  geom_histogram(aes(y =..density..), colour = "black", fill = "grey", bins = 65) + 
+  geom_density(alpha=.2, fill="red", color = "grey") +
+  theme_classic() + 
+  labs(title = "Distribution of Energy Usage (kWh)",
+       y = "Density", x = "Energy Usage")
+
+ggplot(steel_encoded, aes(x = Usage_kWh)) + 
+  geom_density(alpha=.2, fill="red", color = "grey") +
+  geom_density(aes(x = log(Usage_kWh), y = stat(density)),alpha=.2, fill="blue", color = "grey") +
+  # ylim(0, 0) +
+  xlim(0, 10) +
+  theme_classic() + 
+  labs(title = "Logged Vs. Unlogged Energy Usage (kWh)",
+       y = "Density", x = "Compression Strength") +
+  theme(axis.title.y.right = element_text(color = "blue"))
+
+
+
+ggplot(conduct_encoded, aes(x = critical_temp)) + 
+  geom_histogram(aes(y =..density..), colour = "black", fill = "grey", bins = 65) + 
+  geom_density(alpha=.2, fill="red", color = "grey") +
+  theme_classic() + 
+  labs(title = "Distribution of Critical Temperature",
+       y = "Density", x = "Critical Temp")
+
+ggplot(conduct_encoded, aes(x = critical_temp)) + 
+  geom_density(alpha=.2, fill="red", color = "grey") +
+  geom_density(aes(x = log(critical_temp), y = stat(density)),alpha=.2, fill="blue", color = "grey") +
+  # ylim(0, 0) +
+  xlim(-5, 35) +
+  theme_classic() + 
+  labs(title = "Logged Vs. Unlogged Critical Temp",
+       y = "Density", x = "Compression Strength") +
+  theme(axis.title.y.right = element_text(color = "blue"))
+
+
+
+ggplot(gas_encoded, aes(x = strength)) + 
+  geom_histogram(aes(y =stat(density)), colour = "black", fill = "grey", bins = 50) + 
+  geom_density(alpha=.2, fill="red", color = "grey") +
+  theme_classic() + 
+  labs(title = "Distribution of Compression Strength",
+       y = "Density", x = "Compression Strength")
+
+ggplot(gas_encoded, aes(x = strength)) + 
+  geom_density(alpha=.2, fill="red", color = "grey") +
+  geom_density(aes(x = log(strength), y = stat(density)),alpha=.2, fill="blue", color = "grey") +
+  xlim(-5, 50) +
+  theme_classic() + 
+  labs(title = "Logged Vs. Unlogged Compression Strength",
+       y = "Density", x = "Compression Strength") +
+  theme(axis.title.y.right = element_text(color = "blue"))
+```
+
+
+
+
+```{r, correlation plots}
+plot_steel <- steel
+colnames(plot_steel) <- c("Usage", "Lag_Reactive", "Lead_Reactive", "tCO2", 
+                          "Lag_Factor", "Lead_Factor", "NSM", "WeekStatus",
+                          "Weekday", "Load_Type")
+plot_steel <- plot_steel[,!(names(plot_steel) %in% c("Lead_Reactive"))]
+corrplot(cor(plot_steel[2:6]), method="shade", tl.col = "grey", tl.cex = 0.8, tl.srt = 40)
+cor(plot_steel[2:6]) %>% kbl(caption = "") %>% 
+           kable_classic(full_width = F, html_font = "Cambria", latex_options = "hold_position")
+
+plot_conduct <- conduct[,!((names(conduct) %in% c("wtd_mean_Valence", "wtd_entropy_Valence",
+                                                  "range_ThermalConductivity", "std_ThermalConductivity",
+                                                  "std_atomic_mass", "range_atomic_radius",
+                                                  "wtd_range_ThermalConductivity", "gmean_Density",
+                                                  "wtd_std_ThermalConductivity", "wtd_gmean_Valence",
+                                                  "wtd_range_ElectronAffinity", "critical_temp")))]
+
+corrplot(cor(plot_conduct), method="shade", tl.col = "grey", tl.cex = 0.6, tl.srt = 50)
+cor(plot_conduct) %>% kbl(caption = "") %>% 
+           kable_classic(full_width = F, html_font = "Cambria", latex_options = "hold_position")
+
+
+
+corrplot(cor(concrete[1:8]), method="shade", tl.col = "grey")
+cor(concrete[1:8]) %>% kbl(caption = "") %>% 
+           kable_classic(full_width = F, html_font = "Cambria", latex_options = "hold_position")
+```
+
+
+##TODO: Fix model equation on line 564
+##TODO: Include RF as baseline naive model for comparing performance improvement
+##TODO: Fix boxplots/tables for input features for superconductivity
+##TODO: Superconductivity feature selection
+##TODO: Adjust RF to transform predict continuous
+##TODO: Calculate percent MSE change based on RF
+
+
+\newpage
+
+# Appendix: All code for this report
+
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```

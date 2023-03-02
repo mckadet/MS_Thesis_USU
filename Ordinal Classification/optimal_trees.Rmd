@@ -1,0 +1,166 @@
+---
+title: "optimal_trees"
+author: "McKade Thomas"
+date: "8/6/2022"
+output: pdf_document
+---
+
+
+```{r init, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.pos = "!H", fig.show="hold", out.extra = "")
+```
+
+
+```{r setup, include = FALSE}
+source('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/ordinal_helper_methods.R')
+source('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/main_helper_methods.R')
+library(gbm)
+library(fastDummies)
+library(parallel)
+library(tidyverse)
+library(MLmetrics)
+library(plyr)
+library(ggplot2)
+
+## GLOBALS
+# SIZES = unique(round(10^(seq(from=1.2, to=3.8, length=20))))*5
+SIZES = unique(round(10^(seq(from=1, to=2.5, length=20))))*5
+concrete_SIZES = unique(round(10^(seq(from=1, to=2.3, length=20))))*5
+MC <- 50
+MIN_TREES <- 0
+MAX_TREES <- 3
+TREE_LENGTH <- 20
+```
+
+
+# Steel Industry Energy Consumption Data (n=35040)
+URL for data: https://archive.ics.uci.edu/ml/datasets/Steel+Industry+Energy+Consumption+Dataset
+```{r steel, echo = FALSE, message = FALSE}
+# Read in the data
+steel <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/steel/steel.csv', sep = ",", header = TRUE)[-1]
+
+steel_binned <- bin_df(steel, "Usage_kWh")
+steel_encoded <- steel_binned[,c(-(ncol(steel_binned)-1),-ncol(steel_binned))]
+steel_encoded$WeekStatus <- as.factor(steel_encoded$WeekStatus)
+steel_encoded$Day_of_week <- as.factor(steel_encoded$Day_of_week)
+steel_encoded$Load_Type <- as.factor(steel_encoded$Load_Type)
+
+orchestrate_sample_sim(MC, SIZES, steel_encoded, cont_response = "Usage_kWh")
+```
+
+
+
+# Steel 10 classes
+```{r}
+# Read in the data
+steel <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/steel/steel.csv', sep = ",", header = TRUE)[-1]
+
+steel_binned <- bin_df(steel, "Usage_kWh", num_bins = 10)
+steel_encoded <- steel_binned[,c(-(ncol(steel_binned)-1),-ncol(steel_binned))]
+steel_encoded$WeekStatus <- as.factor(steel_encoded$WeekStatus)
+steel_encoded$Day_of_week <- as.factor(steel_encoded$Day_of_week)
+steel_encoded$Load_Type <- as.factor(steel_encoded$Load_Type)
+
+orchestrate_sample_sim(MC, SIZES, steel_encoded, cont_response = "Usage_kWh", num_classes = 10)
+```
+
+
+
+
+
+
+# Superconductivity Data
+Data: https://archive.ics.uci.edu/ml/datasets/Superconductivty+Data
+Related Work: https://arxiv.org/pdf/1803.10260.pdf
+```{r}
+conduct <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/conduct/train.csv', sep = ",", header = TRUE)
+response <- "critical_temp"
+conduct_names <- c(
+  response, "range_ThermalConductivity","wtd_std_ThermalConductivity","range_atomic_radius",
+  "wtd_gmean_ThermalConductivity","std_ThermalConductivity","wtd_entropy_Valence",
+  "wtd_std_ElectronAffinity","wtd_entropy_atomic_mass","wtd_mean_Valence",
+  "wtd_gmean_ElectronAffinity","wtd_range_ElectronAffinity","wtd_mean_ThermalConductivity",
+  "wtd_gmean_Valence","std_atomic_mass","std_Density","wtd_entropy_ThermalConductivity",
+  "wtd_range_ThermalConductivity","wtd_mean_atomic_mass","wtd_std_atomic_mass","gmean_Density"
+)
+conduct <- conduct[,(names(conduct) %in% conduct_names)]
+conduct_binned <- bin_df(conduct, response)
+conduct_encoded <- conduct_binned[,c(-(ncol(conduct_binned)-1),-ncol(conduct_binned))]
+conduct_encoded <- conduct_encoded[,!((names(conduct_encoded) %in% c("wtd_mean_Valence", "wtd_entropy_Valence",
+                                                  "range_ThermalConductivity", "std_ThermalConductivity",
+                                                  "std_atomic_mass", "range_atomic_radius",
+                                                  "wtd_range_ThermalConductivity", "gmean_Density",
+                                                  "wtd_std_ThermalConductivity", "wtd_gmean_Valence",
+                                                  "wtd_range_ElectronAffinity")))]
+
+orchestrate_sample_sim(MC, SIZES, conduct_encoded, cont_response = "critical_temp")
+```
+
+
+
+# Conduct 10 classes
+```{r}
+conduct <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/conduct/train.csv', sep = ",", header = TRUE)
+response <- "critical_temp"
+conduct_names <- c(
+  response, "range_ThermalConductivity","wtd_std_ThermalConductivity","range_atomic_radius",
+  "wtd_gmean_ThermalConductivity","std_ThermalConductivity","wtd_entropy_Valence",
+  "wtd_std_ElectronAffinity","wtd_entropy_atomic_mass","wtd_mean_Valence",
+  "wtd_gmean_ElectronAffinity","wtd_range_ElectronAffinity","wtd_mean_ThermalConductivity",
+  "wtd_gmean_Valence","std_atomic_mass","std_Density","wtd_entropy_ThermalConductivity",
+  "wtd_range_ThermalConductivity","wtd_mean_atomic_mass","wtd_std_atomic_mass","gmean_Density"
+)
+conduct <- conduct[,(names(conduct) %in% conduct_names)]
+# conduct$critical_temp <- log(conduct$critical_temp)
+conduct_binned <- bin_df(conduct, response, num_bins = 10)
+conduct_encoded <- conduct_binned[,c(-(ncol(conduct_binned)-1),-ncol(conduct_binned))]
+
+orchestrate_sample_sim(MC, SIZES, conduct_encoded, cont_response = "critical_temp", num_classes = 10)
+```
+
+
+
+
+
+
+
+
+
+
+# Compression Strength
+https://data.world/uci/concrete-compressive-strength
+```{r}
+concrete <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/concrete/concrete.csv', sep = ",", header = TRUE)
+names <- c("cement", "blast", "fly_ash", "water", "plastic", "coarse", "fine", "age", "strength")
+colnames(concrete) <- names
+
+concrete_binned <- bin_df(concrete, "strength")
+concrete_encoded <- concrete_binned[,c(-(ncol(concrete_binned)-1),-ncol(concrete_binned))]
+
+
+orchestrate_sample_sim(MC = 10, concrete_SIZES, concrete_encoded, cont_response = "strength", TREE_LENGTH = 20)
+```
+
+
+# Concrete 10 Classes
+```{r}
+concrete <- read.table('C:/Users/mckad/Documents/USU Coursework/Thesis Work/Ordinal Classification/datasets/concrete/concrete.csv', sep = ",", header = TRUE)
+names <- c("cement", "blast", "fly_ash", "water", "plastic", "coarse", "fine", "age", "strength")
+colnames(concrete) <- names
+
+concrete_binned <- bin_df(concrete, "strength", num_bins = 10)
+concrete_encoded <- concrete_binned[,c(-(ncol(concrete_binned)-1),-ncol(concrete_binned))]
+
+
+orchestrate_sample_sim(MC, concrete_SIZES, concrete_encoded, cont_response = "strength", num_classes = 10)
+
+```
+
+
+
+
+
+
+Other articles
+Pg 3 - discretizing continuous response: https://www.researchgate.net/profile/Willem-Waegeman-2/publication/228350235_An_ensemble_of_weighted_support_vector_machines_for_ordinal_regression/links/0046353be578c3aa0b000000/An-ensemble-of-weighted-support-vector-machines-for-ordinal-regression.pdf

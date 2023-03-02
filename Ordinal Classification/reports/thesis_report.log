@@ -1,0 +1,730 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.9.28)  27 OCT 2022 11:45
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**thesis_report.tex
+(./thesis_report.tex
+LaTeX2e <2021-06-01> patch level 1
+L3 programming layer <2021-08-27>
+(c:/texlive/2021/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2021/02/12 v1.4n Standard LaTeX document class
+(c:/texlive/2021/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2021/02/12 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count182
+\c@section=\count183
+\c@subsection=\count184
+\c@subsubsection=\count185
+\c@paragraph=\count186
+\c@subparagraph=\count187
+\c@figure=\count188
+\c@table=\count189
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+)
+(c:/texlive/2021/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2020/12/05 v1.2c Enhanced LaTeX Graphics (DPC,SPQR)
+
+(c:/texlive/2021/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks16
+)
+(c:/texlive/2021/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
+
+(c:/texlive/2021/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(c:/texlive/2021/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 107.
+
+(c:/texlive/2021/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen139
+\Gin@req@width=\dimen140
+)
+(c:/texlive/2021/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+(c:/texlive/2021/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+)
+(c:/texlive/2021/texmf-dist/tex/latex/framed/framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip49
+\fb@frw=\dimen141
+\fb@frh=\dimen142
+\FrameRule=\dimen143
+\FrameSep=\dimen144
+)
+(c:/texlive/2021/texmf-dist/tex/latex/base/alltt.sty
+Package: alltt 2021/01/29 v2.0g defines alltt environment
+)
+(c:/texlive/2021/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(c:/texlive/2021/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(c:/texlive/2021/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+))
+\Gm@cnth=\count190
+\Gm@cntv=\count191
+\c@Gm@tempcnt=\count192
+\Gm@bindingoffset=\dimen145
+\Gm@wd@mp=\dimen146
+\Gm@odd@mp=\dimen147
+\Gm@even@mp=\dimen148
+\Gm@layoutwidth=\dimen149
+\Gm@layoutheight=\dimen150
+\Gm@layouthoffset=\dimen151
+\Gm@layoutvoffset=\dimen152
+\Gm@dimlist=\toks17
+)
+(c:/texlive/2021/texmf-dist/tex/latex/psnfss/times.sty
+Package: times 2020/03/25 PSNFSS-v9.3 (SPQR) 
+)
+(c:/texlive/2021/texmf-dist/tex/latex/setspace/setspace.sty
+Package: setspace 2011/12/19 v6.7a set line spacing
+)
+(c:/texlive/2021/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2021/04/20 v2.17j AMS math features
+\@mathmargin=\skip50
+
+For additional information on amsmath, use the `?' option.
+(c:/texlive/2021/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+
+(c:/texlive/2021/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks18
+\ex@=\dimen153
+))
+(c:/texlive/2021/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen154
+)
+(c:/texlive/2021/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count193
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count194
+\leftroot@=\count195
+LaTeX Info: Redefining \overline on input line 399.
+\classnum@=\count196
+\DOTSCASE@=\count197
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box50
+\strutbox@=\box51
+\big@size=\dimen155
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count198
+\c@MaxMatrixCols=\count199
+\dotsspace@=\muskip16
+\c@parentequation=\count266
+\dspbrk@lvl=\count267
+\tag@help=\toks19
+\row@=\count268
+\column@=\count269
+\maxfields@=\count270
+\andhelp@=\toks20
+\eqnshift@=\dimen156
+\alignsep@=\dimen157
+\tagshift@=\dimen158
+\tagwidth@=\dimen159
+\totwidth@=\dimen160
+\lineht@=\dimen161
+\@envbody=\toks21
+\multlinegap=\skip51
+\multlinetaggap=\skip52
+\mathdisplay@stack=\toks22
+LaTeX Info: Redefining \[ on input line 2923.
+LaTeX Info: Redefining \] on input line 2924.
+)
+(c:/texlive/2021/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2021/02/14 v1.3d Input encoding file
+\inpenc@prehook=\toks23
+\inpenc@posthook=\toks24
+)
+(c:/texlive/2021/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2021/07/22 3.63 The Babel package
+
+(c:/texlive/2021/texmf-dist/tex/generic/babel/babel.def
+File: babel.def 2021/07/22 3.63 Babel common definitions
+\babel@savecnt=\count271
+\U@D=\dimen162
+\l@unhyphenated=\language87
+
+(c:/texlive/2021/texmf-dist/tex/generic/babel/txtbabel.def)
+\bbl@readstream=\read2
+)
+\bbl@dirlevel=\count272
+
+(c:/texlive/2021/texmf-dist/tex/generic/babel-english/english.ldf
+Language: english 2017/06/06 v3.3r English support from the babel system
+Package babel Info: Hyphen rules for 'canadian' set to \l@english
+(babel)             (\language0). Reported on input line 102.
+Package babel Info: Hyphen rules for 'australian' set to \l@ukenglish
+(babel)             (\language21). Reported on input line 105.
+Package babel Info: Hyphen rules for 'newzealand' set to \l@ukenglish
+(babel)             (\language21). Reported on input line 108.
+))
+(c:/texlive/2021/texmf-dist/tex/latex/tools/multicol.sty
+Package: multicol 2019/12/09 v1.8y multicolumn formatting (FMi)
+\c@tracingmulticols=\count273
+\mult@box=\box52
+\multicol@leftmargin=\dimen163
+\c@unbalance=\count274
+\c@collectmore=\count275
+\doublecol@number=\count276
+\multicoltolerance=\count277
+\multicolpretolerance=\count278
+\full@width=\dimen164
+\page@free=\dimen165
+\premulticols=\dimen166
+\postmulticols=\dimen167
+\multicolsep=\skip53
+\multicolbaselineskip=\skip54
+\partial@page=\box53
+\last@line=\box54
+\maxbalancingoverflow=\dimen168
+\mult@rightbox=\box55
+\mult@grightbox=\box56
+\mult@gfirstbox=\box57
+\mult@firstbox=\box58
+\@tempa=\box59
+\@tempa=\box60
+\@tempa=\box61
+\@tempa=\box62
+\@tempa=\box63
+\@tempa=\box64
+\@tempa=\box65
+\@tempa=\box66
+\@tempa=\box67
+\@tempa=\box68
+\@tempa=\box69
+\@tempa=\box70
+\@tempa=\box71
+\@tempa=\box72
+\@tempa=\box73
+\@tempa=\box74
+\@tempa=\box75
+\@tempa=\box76
+\@tempa=\box77
+\@tempa=\box78
+\@tempa=\box79
+\@tempa=\box80
+\@tempa=\box81
+\@tempa=\box82
+\@tempa=\box83
+\@tempa=\box84
+\@tempa=\box85
+\@tempa=\box86
+\@tempa=\box87
+\@tempa=\box88
+\@tempa=\box89
+\@tempa=\box90
+\@tempa=\box91
+\@tempa=\box92
+\@tempa=\box93
+\@tempa=\box94
+\@tempa=\box95
+\c@minrows=\count279
+\c@columnbadness=\count280
+\c@finalcolumnbadness=\count281
+\last@try=\dimen169
+\multicolovershoot=\dimen170
+\multicolundershoot=\dimen171
+\mult@nat@firstbox=\box96
+\colbreak@box=\box97
+\mc@col@check@num=\count282
+)
+(c:/texlive/2021/texmf-dist/tex/latex/sectsty/sectsty.sty
+Package: sectsty 2002/02/25 v2.0.2 Commands to change all sectional heading sty
+les
+
+
+LaTeX Warning: Command \underbar  has changed.
+               Check if current package is valid.
+
+
+LaTeX Warning: Command \underline  has changed.
+               Check if current package is valid.
+
+) (c:/texlive/2021/texmf-dist/tex/latex/titlesec/titletoc.sty
+Package: titletoc 2021/07/05 v2.14 TOC entries
+\ttl@leftsep=\dimen172
+)
+(c:/texlive/2021/texmf-dist/tex/latex/parskip/parskip.sty
+Package: parskip 2021-03-14 v2.0h non-zero parskip adjustments
+
+(c:/texlive/2021/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
+
+(c:/texlive/2021/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
+)
+(c:/texlive/2021/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
+))
+(c:/texlive/2021/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count283
+))
+(c:/texlive/2021/texmf-dist/tex/latex/upquote/upquote.sty
+Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
+tim
+
+(c:/texlive/2021/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
+))
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 7
+2.
+
+(c:/texlive/2021/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+(c:/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2021-08-04 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count284
+\l__pdf_internal_box=\box98
+)
+(./thesis_report.aux)
+\openout1 = `thesis_report.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+
+(c:/texlive/2021/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count285
+\scratchdimen=\dimen173
+\scratchbox=\box99
+\nofMPsegments=\count286
+\nofMParguments=\count287
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count288
+\MPscratchDim=\dimen174
+\MPnumerator=\count289
+\makeMPintoPDFobject=\count290
+\everyMPtoPDFconversion=\toks26
+) (c:/texlive/2021/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(c:/texlive/2021/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(108.405pt, 433.62001pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 650.43001pt, 72.26999pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=433.62001pt
+* \textheight=650.43001pt
+* \oddsidemargin=36.13501pt
+* \evensidemargin=36.13501pt
+* \topmargin=-37.0pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--102
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--110
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--118
+
+ []
+
+[1
+
+{c:/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
+38.
+
+(c:/texlive/2021/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+) [1
+
+] [1] [2] [3]
+(./thesis_report.toc [4])
+\tf@toc=\write3
+\openout3 = `thesis_report.toc'.
+
+ [5] (./thesis_report.lof [6]
+Overfull \hbox (7.73692pt too wide) in paragraph at lines 11--11
+ \OT1/ptm/m/n/14.4 sented the high-est de-gree of neg-a-tive cor-re-la-tion (-0
+.81) while 
+ []
+
+
+Overfull \hbox (7.73692pt too wide) in paragraph at lines 12--12
+ \OT1/ptm/m/n/14.4 sented the high-est de-gree of neg-a-tive cor-re-la-tion (-0
+.81) while 
+ []
+
+[7])
+\tf@lof=\write4
+\openout4 = `thesis_report.lof'.
+
+ [8] (./thesis_report.lot)
+\tf@lot=\write5
+\openout5 = `thesis_report.lot'.
+
+ [9] [10] [1] [2] [3] [4]
+Underfull \hbox (badness 10000) in paragraph at lines 233--234
+
+ []
+
+<general_graphics/ordinal_v_regression.png, id=57, 532.5158pt x 329.01868pt>
+File: general_graphics/ordinal_v_regression.png Graphic file (type png)
+<use general_graphics/ordinal_v_regression.png>
+Package pdftex.def Info: general_graphics/ordinal_v_regression.png  used on inp
+ut line 237.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+[5] [6 <./general_graphics/ordinal_v_regression.png>] [7]
+Overfull \hbox (1.39943pt too wide) in paragraph at lines 261--262
+[]\OT1/ptm/m/n/14.4 Thus, other ap-proaches which gen-er-ally re-sult in bet-te
+r per-for-mance in terms
+ []
+
+[8] [9] [10] [11] [12]
+Overfull \hbox (3.72066pt too wide) in paragraph at lines 290--291
+[]\OT1/ptm/m/n/14.4 "The UCI Ma-chine Learn-ing Repos-i-tory is a col-lec-tion 
+of databases,
+ []
+
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 298--299
+
+ []
+
+
+Overfull \hbox (1.0862pt too wide) in paragraph at lines 302--309
+ [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 315--316
+
+ []
+
+[14]
+Underfull \hbox (badness 10000) in paragraph at lines 333--334
+
+ []
+
+
+Overfull \hbox (2.80682pt too wide) in paragraph at lines 337--351
+ [] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 357--358
+
+ []
+
+[15]
+<EDA/steel_response_dist.png, id=96, 532.5158pt x 329.01868pt>
+File: EDA/steel_response_dist.png Graphic file (type png)
+<use EDA/steel_response_dist.png>
+Package pdftex.def Info: EDA/steel_response_dist.png  used on input line 361.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+ [16]
+Underfull \hbox (badness 10000) in paragraph at lines 368--369
+
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 388--389
+
+ []
+
+[17 <./EDA/steel_response_dist.png>]
+<EDA/boxplots_steel_features.png, id=104, 514.44829pt x 190.1842pt>
+File: EDA/boxplots_steel_features.png Graphic file (type png)
+<use EDA/boxplots_steel_features.png>
+Package pdftex.def Info: EDA/boxplots_steel_features.png  used on input line 39
+2.
+(pdftex.def)             Requested size: 411.55919pt x 152.14755pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 400--401
+
+ []
+
+[18 <./EDA/boxplots_steel_features.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 422--423
+
+ []
+
+[19]
+<EDA/conduct_response_dist.png, id=114, 532.5158pt x 329.01868pt>
+File: EDA/conduct_response_dist.png Graphic file (type png)
+<use EDA/conduct_response_dist.png>
+Package pdftex.def Info: EDA/conduct_response_dist.png  used on input line 426.
+
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+ [20 <./EDA/conduct_response_dist.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 435--436
+
+ []
+
+<EDA/boxplots_conduct_features.png, id=119, 532.5158pt x 329.01868pt>
+File: EDA/boxplots_conduct_features.png Graphic file (type png)
+<use EDA/boxplots_conduct_features.png>
+Package pdftex.def Info: EDA/boxplots_conduct_features.png  used on input line 
+461.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 468--469
+
+ []
+
+[21] [22 <./EDA/boxplots_conduct_features.png>]
+<EDA/concrete_response_dist.png, id=127, 532.5158pt x 329.01868pt>
+File: EDA/concrete_response_dist.png Graphic file (type png)
+<use EDA/concrete_response_dist.png>
+Package pdftex.def Info: EDA/concrete_response_dist.png  used on input line 495
+.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+ [23] [24 <./EDA/concrete_response_dist.png>]
+<EDA/boxplots_concrete_features.png, id=135, 532.5158pt x 329.01868pt>
+File: EDA/boxplots_concrete_features.png Graphic file (type png)
+<use EDA/boxplots_concrete_features.png>
+Package pdftex.def Info: EDA/boxplots_concrete_features.png  used on input line
+ 530.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+ [25 <./EDA/boxplots_concrete_features.png>]
+Overfull \hbox (5.94998pt too wide) in paragraph at lines 542--543
+\OT1/ptm/m/n/14.4 higher in-put val-ues wouldn't dom-i-nate com-pu-ta-tion, see
+-ing as ma-chine learn-
+ []
+
+[26]
+Underfull \hbox (badness 10000) in paragraph at lines 555--556
+
+ []
+
+<EDA/corrplot_steel.png, id=145, 532.5158pt x 329.01868pt>
+File: EDA/corrplot_steel.png Graphic file (type png)
+<use EDA/corrplot_steel.png>
+Package pdftex.def Info: EDA/corrplot_steel.png  used on input line 559.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 564--565
+
+ []
+
+[27]
+<EDA/corrplot_steel_trimmed.png, id=149, 532.5158pt x 329.01868pt>
+File: EDA/corrplot_steel_trimmed.png Graphic file (type png)
+<use EDA/corrplot_steel_trimmed.png>
+Package pdftex.def Info: EDA/corrplot_steel_trimmed.png  used on input line 568
+.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+ [28 <./EDA/corrplot_steel.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 575--576
+
+ []
+
+<EDA/corrplot_conduct.png, id=153, 532.5158pt x 329.01868pt>
+File: EDA/corrplot_conduct.png Graphic file (type png)
+<use EDA/corrplot_conduct.png>
+Package pdftex.def Info: EDA/corrplot_conduct.png  used on input line 579.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 584--585
+
+ []
+
+[29 <./EDA/corrplot_steel_trimmed.png (PNG copy)>]
+<EDA/corrplot_conduct_trimmed.png, id=157, 532.5158pt x 329.01868pt>
+File: EDA/corrplot_conduct_trimmed.png Graphic file (type png)
+<use EDA/corrplot_conduct_trimmed.png>
+Package pdftex.def Info: EDA/corrplot_conduct_trimmed.png  used on input line 5
+88.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+ [30 <./EDA/corrplot_conduct.png (PNG copy)>]
+<EDA/corrplot_concrete.png, id=161, 532.5158pt x 329.01868pt>
+File: EDA/corrplot_concrete.png Graphic file (type png)
+<use EDA/corrplot_concrete.png>
+Package pdftex.def Info: EDA/corrplot_concrete.png  used on input line 599.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+ [31 <./EDA/corrplot_conduct_trimmed.png (PNG copy)>]
+<EDA/binning_example.png, id=166, 532.5158pt x 329.01868pt>
+File: EDA/binning_example.png Graphic file (type png)
+<use EDA/binning_example.png>
+Package pdftex.def Info: EDA/binning_example.png  used on input line 611.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+ [32 <./EDA/corrplot_concrete.png (PNG copy)>]
+Overfull \hbox (2.06653pt too wide) in paragraph at lines 622--629
+ [] 
+ []
+
+<general_graphics/class_distribution_boxplots.png, id=170, 532.5158pt x 329.018
+68pt>
+File: general_graphics/class_distribution_boxplots.png Graphic file (type png)
+<use general_graphics/class_distribution_boxplots.png>
+Package pdftex.def Info: general_graphics/class_distribution_boxplots.png  used
+ on input line 637.
+(pdftex.def)             Requested size: 292.88458pt x 180.96083pt.
+[33 <./EDA/binning_example.png>] [34 <./general_graphics/class_distribution_box
+plots.png>] [35] [36] [37] [38] [39]
+Overfull \hbox (19.03537pt too wide) in paragraph at lines 724--731
+ [] 
+ []
+
+[40]
+<effects_of_complexity/final_steel_complexity_with_max.png, id=201, 532.5158pt 
+x 329.01868pt>
+File: effects_of_complexity/final_steel_complexity_with_max.png Graphic file (t
+ype png)
+<use effects_of_complexity/final_steel_complexity_with_max.png>
+Package pdftex.def Info: effects_of_complexity/final_steel_complexity_with_max.
+png  used on input line 742.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+<effects_of_complexity/final_conduct_complexity_with_max.png, id=202, 532.5158p
+t x 329.01868pt>
+File: effects_of_complexity/final_conduct_complexity_with_max.png Graphic file 
+(type png)
+<use effects_of_complexity/final_conduct_complexity_with_max.png>
+Package pdftex.def Info: effects_of_complexity/final_conduct_complexity_with_ma
+x.png  used on input line 751.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+<effects_of_complexity/final_concrete_complexity_with_max.png, id=203, 532.5158
+pt x 329.01868pt>
+File: effects_of_complexity/final_concrete_complexity_with_max.png Graphic file
+ (type png)
+<use effects_of_complexity/final_concrete_complexity_with_max.png>
+Package pdftex.def Info: effects_of_complexity/final_concrete_complexity_with_m
+ax.png  used on input line 760.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+ [41 <./effects_of_complexity/final_steel_complexity_with_max.png>]
+[42 <./effects_of_complexity/final_conduct_complexity_with_max.png> <./effects_
+of_complexity/final_concrete_complexity_with_max.png>] [43]
+<effects_of_sample_size/corrected_steel_optimal_trees.png, id=217, 532.5158pt x
+ 329.01868pt>
+File: effects_of_sample_size/corrected_steel_optimal_trees.png Graphic file (ty
+pe png)
+<use effects_of_sample_size/corrected_steel_optimal_trees.png>
+Package pdftex.def Info: effects_of_sample_size/corrected_steel_optimal_trees.p
+ng  used on input line 794.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+<effects_of_sample_size/corrected_conduct_optimal_trees.png, id=218, 532.5158pt
+ x 329.01868pt>
+File: effects_of_sample_size/corrected_conduct_optimal_trees.png Graphic file (
+type png)
+<use effects_of_sample_size/corrected_conduct_optimal_trees.png>
+Package pdftex.def Info: effects_of_sample_size/corrected_conduct_optimal_trees
+.png  used on input line 803.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+<effects_of_sample_size/corrected_concrete_optimal_trees.png, id=219, 532.5158p
+t x 329.01868pt>
+File: effects_of_sample_size/corrected_concrete_optimal_trees.png Graphic file 
+(type png)
+<use effects_of_sample_size/corrected_concrete_optimal_trees.png>
+Package pdftex.def Info: effects_of_sample_size/corrected_concrete_optimal_tree
+s.png  used on input line 812.
+(pdftex.def)             Requested size: 426.0132pt x 263.21529pt.
+ [44 <./effects_of_sample_size/corrected_steel_optimal_trees.png>] [45 <./effec
+ts_of_sample_size/corrected_conduct_optimal_trees.png> <./effects_of_sample_siz
+e/corrected_concrete_optimal_trees.png>] [46] (./thesis_report.bbl [47] [48]) [
+49]
+(./thesis_report.aux) )
+(\end occurred inside a group at level 1)
+
+### semi simple group (level 1) entered at line 70 (\begingroup)
+### bottom level 
+Here is how much of TeX's memory you used:
+ 5332 strings out of 478599
+ 81748 string characters out of 5858101
+ 422597 words of memory out of 5000000
+ 23099 multiletter control sequences out of 15000+600000
+ 418237 words of font info for 50 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 57i,11n,66p,1314b,1117s stack positions out of 5000i,500n,10000p,200000b,80000s
+{c:/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:/tex
+live/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2021
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2021/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2021/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2021/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmr12.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmr7.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
+.pfb><c:/texlive/2021/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><c:/texlive/2
+021/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><c:/texlive/2021/texmf-dist/fon
+ts/type1/urw/times/utmri8a.pfb>
+Output written on thesis_report.pdf (61 pages, 340295 bytes).
+PDF statistics:
+ 289 PDF objects out of 1000 (max. 8388607)
+ 169 compressed objects within 2 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 101 words of extra memory for PDF output out of 10000 (max. 10000000)
+
