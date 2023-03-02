@@ -1,11 +1,0 @@
-"0","plot(log(lset), log((run_sim(metric = ""Bias"") - B[1])^2), 
-     main = ""Bias for Increasing Lambda Vals"",
-     ylab = ""Bias"", 
-     xlab = ""Logged Lambda"")
-"
-"1","  |                                                        "
-"1","  |                                                  |   0%"
-"1","  |                                                        "
-"1","  |==================================================| 100%"
-"2","Error in xy.coords(x, y, xlabel, ylabel, log) : object 'B' not found
-"

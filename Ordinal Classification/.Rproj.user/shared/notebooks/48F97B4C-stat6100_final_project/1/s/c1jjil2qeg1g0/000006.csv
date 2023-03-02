@@ -1,9 +1,0 @@
-"0","plot(log(lset), log(run_sim(metric = ""Var"")), 
-     main = ""Variance for Increasing Lambda Vals"",
-     ylab = ""Variance"", 
-)
-"
-"1","  |                                                        "
-"1","  |                                                  |   0%"
-"1","  |                                                        "
-"1","  |==================================================| 100%"
